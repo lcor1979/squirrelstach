@@ -3,7 +3,8 @@
 </header>
 <main>
 	<div class="page-content container">
-		<router-outlet></router-outlet>
+		<router-outlet *ngIf="userIsLogged"></router-outlet>
+		<div *ngIf="!userIsLogged">Not logged in</div>
 	</div>
 </main>
 <footer>

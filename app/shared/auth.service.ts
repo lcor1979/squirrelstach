@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Subject }    from 'rxjs/Subject';
 
 declare var firebase: any;
 
@@ -9,8 +10,20 @@ export class AuthService {
 	googleAccessToken;
 	user;
 
+	private userLoggedSubject = new Subject<any>();
+	private userLogged$ = this.userLoggedSubject.asObservable();
+
+	addUserLoggedHandler(handler):any {
+		return this.userLogged$.subscribe(user => handler(user));
+	}
+
+	removeUserLoggedHandler(subscription) {
+		subscription.unsubscribe();
+	}
+
 	signIn() {
 		this.provider = new firebase.auth.GoogleAuthProvider();
+		this.userLoggedSubject.next(null);
 
 		firebase.auth().getRedirectResult().then(result => {
 			if (!result.user) {
@@ -24,6 +37,7 @@ export class AuthService {
 			}
 			// The signed-in user info.
 			this.user = result.user;
+			this.userLoggedSubject.next(this.user);
 		}).catch(function(error) {
 			// Handle Errors here.
 			var errorCode = error.code;
