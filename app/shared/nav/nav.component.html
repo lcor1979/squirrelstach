@@ -1,0 +1,26 @@
+<ul id="accountMenu" class="dropdown-content">
+  <li><a href="#!">one</a></li>
+  <li><a href="#!">two</a></li>
+  <li class="divider"></li>
+  <li><a href="#!">three</a></li>
+</ul>
+<nav>
+    <div class="nav-wrapper">
+        <a [routerLink]="['Home']" class="brand-logo">Squirel Stach</a>
+        <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+            <li [class.active]="isActive('List')"><a [routerLink]="['List']">List</a></li>
+            <li [class.active]="isActive('Details')"><a [routerLink]="['Details']">Details</a></li>
+            <li *ngIf="authService.user" class="valign-wrapper">
+                <a class="valign dropdown-button" href="javascript:void()" data-activates="accountMenu"><img src="{{authService.user.photoURL}}" class="circle responsive-img avatar" alt="{{authService.user.displayName}}" title="{{authService.user.displayName}}" />
+                </a>
+            </li>
+        </ul>
+        <ul class="side-nav" id="mobile-menu">
+            <li *ngIf="authService.user"><img src="{{authService.user.photoURL}}" class="circle responsive-img avatar" width="46px" height="46px" alt="{{authService.user.displayName}}" title="{{authService.user.displayName}}" /> {{authService.user.displayName}}
+            </li>
+            <li [class.active]="isActive('List')"><a [routerLink]="['List']">List</a></li>
+            <li [class.active]="isActive('Details')"><a [routerLink]="['Details']">Details</a></li>
+        </ul>
+    </div>
+</nav>

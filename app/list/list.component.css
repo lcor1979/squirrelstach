@@ -1,0 +1,27 @@
+.search-category-field {
+	padding-top: 10px;
+	padding-bottom: 10px;
+  line-height: 40px;
+}
+
+.search-category {
+	padding-left: 10px;	
+}
+
+.title {
+	font-weight: bold;
+	color: #ee6e73;
+}
+
+.notes {
+	font-size: 10px;
+}
+
+a.collection-item {
+	color: #000000;
+}
+
+.collection-item.active {
+    background-color: #ffebee;
+    color: #000000
+}

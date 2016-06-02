@@ -1,0 +1,71 @@
+<html>
+  <head>
+    <title>Squirrel Stach</title>
+    <base href="/">
+    <meta charset="UTF-8">
+	<!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="node_modules/materialize-css/bin/materialize.css"  media="screen,projection"/>
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link type="text/css"  rel="stylesheet" href="style.css">
+    <!-- 1. Load libraries -->
+     <!-- Polyfill(s) for older browsers -->
+    <script src="node_modules/core-js/client/shim.min.js"></script>
+    <script src="node_modules/zone.js/dist/zone.js"></script>
+    <script src="node_modules/reflect-metadata/Reflect.js"></script>
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
+	<!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="node_modules/materialize-css/node_modules/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="node_modules/materialize-css/bin/materialize.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+	<script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyAgBbyYS3KUU5uqXXh3wpfGwSaEHh3Z-Fc",
+    authDomain: "project-4879179698071552512.firebaseapp.com",
+    databaseURL: "https://project-4879179698071552512.firebaseio.com",
+    storageBucket: "project-4879179698071552512.appspot.com",
+  };
+  firebase.initializeApp(config);
+
+  var provider = new firebase.auth.GoogleAuthProvider();   
+
+    firebase.auth().getRedirectResult().then(function(result) {
+      if (!result.user) {
+        firebase.auth().signInWithRedirect(this.provider);
+        return;
+      }
+
+      if (result.credential) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = result.credential.idToken;
+      }
+      // The signed-in user info.
+      var user = result.user;
+    }).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      alert('Error: ' + errorMessage);
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
+    });
+</script>
+    <!-- 2. Configure SystemJS -->
+    <script src="systemjs.config.js"></script>
+    <script>
+      System.import('app').catch(function(err){ console.error(err); });
+    </script>
+  </head>
+  <!-- 3. Display the application -->
+  <body class="grey lighten-4">
+    <sqs-app>Loading...</sqs-app>	   
+  </body>  
+</html>
