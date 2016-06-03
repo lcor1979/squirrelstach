@@ -21,7 +21,7 @@ export class AuthService {
 		subscription.unsubscribe();
 	}
 
-	signIn() {
+	startAuthentication() {
 		this.provider = new firebase.auth.GoogleAuthProvider();
 		this.userLoggedSubject.next(null);
 

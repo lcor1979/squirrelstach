@@ -1,0 +1,7 @@
+.preloader-wrapper {
+	position: fixed;
+	left: 47%;
+	bottom: 40%;
+	width: 128px;
+	height: 128px;
+}

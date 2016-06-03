@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 
-import { NUTS } from './mock-nuts';
+declare var firebase: any;
 
 @Injectable()
 export class NutsService {
-	getNuts() {
-		return Promise.resolve(NUTS);	
+	getNuts(userId, callback: (snapshot:any) => void) {
+		firebase.database().ref('staches/' + userId + '/nuts').orderByChild('name')
+		.on('value', 
+		function(snapshot) { callback(snapshot) });
 	}
 }

@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import {ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 
-import { NutsService }   from '../shared/index';
+import { AuthService, NutsService }   from '../shared/index';
 import { FilterNutsPipe }   from './filter-nuts.pipe';
+
+declare var firebase: any;
+
 
 @Component({
 	moduleId: module.id,
@@ -16,10 +19,10 @@ export class ListComponent implements OnInit {
 
 	searchValue: string;
 	category: string;
-	nuts;
+	nuts = [];
 	selectedNut;
 
-	constructor(private nutsService: NutsService) {
+	constructor(private authService: AuthService, private nutsService: NutsService, private zone: NgZone) {
     }
 
 	removeCategory() {
@@ -35,8 +38,17 @@ export class ListComponent implements OnInit {
 	}
 
 	getNuts() {
-		this.nutsService.getNuts().then(nuts => this.nuts = nuts);
+		firebase.database().ref('staches/' + this.authService.user.uid + '/nuts').orderByChild('name').on('value', (data) => this.addNuts(data));
 	}
+
+	private addNuts(data) {
+		var self = this;
+		self.nuts = [];
+		data.forEach(function(nut) {
+			self.nuts.push(nut.val());
+		});
+	}
+
 	ngOnInit() {
 		this.getNuts();
 	}

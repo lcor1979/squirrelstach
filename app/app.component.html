@@ -1,12 +1,30 @@
 <header>
-	<sqs-nav></sqs-nav>
+    <sqs-nav *ngIf="userIsLogged"></sqs-nav>
+    <nav *ngIf="!userIsLogged">
+        <div class="nav-wrapper">
+            <a class="brand-logo">Squirel Stach</a>
+        </div>
+    </nav>
 </header>
 <main>
-	<div class="page-content container">
-		<router-outlet *ngIf="userIsLogged"></router-outlet>
-		<div *ngIf="!userIsLogged">Not logged in</div>
-	</div>
+    <div *ngIf="userIsLogged" class="page-content container">
+        <router-outlet></router-outlet>
+    </div>
+    <div *ngIf="!userIsLogged" class="page-content container">
+        <div class="preloader-wrapper big active">
+            <div class="spinner-layer spinner-red-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 <footer>
-	
 </footer>

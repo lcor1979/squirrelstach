@@ -11,7 +11,7 @@
         <ul class="right hide-on-med-and-down">
             <li [class.active]="isActive('List')"><a [routerLink]="['List']">List</a></li>
             <li [class.active]="isActive('Details')"><a [routerLink]="['Details']">Details</a></li>
-            <li *ngIf="authService.user" class="valign-wrapper">
+            <li class="valign-wrapper">
                 <a class="valign dropdown-button" href="javascript:void()" data-activates="accountMenu"><img src="{{authService.user.photoURL}}" class="circle responsive-img avatar" alt="{{authService.user.displayName}}" title="{{authService.user.displayName}}" />
                 </a>
             </li>
