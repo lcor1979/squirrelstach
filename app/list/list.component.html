@@ -2,7 +2,7 @@
 <nav>
     <form style="margin-top: 10px; margin-bottom: 10px">
         <div class="input-field">
-            <input id="search" type="search" [(ngModel)]="searchValue" required>
+            <input id="search" #search type="search" (keyup)="searchValueChanged(search.value)" required>
             <label for="search"><i class="material-icons">search</i></label>
             <i class="material-icons">close</i>
         </div>
@@ -15,7 +15,7 @@
     </div>
 </div>
 <ul class="collection">
-    <a *ngFor="let nut of (nuts | filterNuts:searchValue:category)" class="collection-item avatar"  [class.active]="nut == selectedNut">
+    <a *ngFor="let nut of nuts" class="collection-item avatar"  [class.active]="nut == selectedNut">
     <div (click)="onSelect(nut)">
         <i class="material-icons red circle">shopping_basket</i>
         <span class="title truncate">{{nut.name}}</span>
