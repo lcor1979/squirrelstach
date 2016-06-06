@@ -9,12 +9,16 @@
     '@angular':                   'node_modules/@angular',
     'angular2-in-memory-web-api': 'node_modules/angular2-in-memory-web-api',
     'rxjs':                       'node_modules/rxjs',
+    'underscore': 'node_modules/underscore',
+    'underscore.string': 'node_modules/underscore.string/dist',
   };
   // packages tells the System loader how to load when no filename and/or no extension
   var packages = {
     'app':                        { main: 'main.js',  defaultExtension: 'js'},
     'rxjs':                       { defaultExtension: 'js' },
     'angular2-in-memory-web-api': { defaultExtension: 'js' },
+    'underscore': { main: 'underscore.js',  defaultExtension: 'js'},
+    'underscore.string': { main: 'underscore.string.js',  defaultExtension: 'js'},
   };
   var ngPackageNames = [
     'common',

@@ -3,6 +3,8 @@ import {ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 
 import { AuthService, FirebaseDBService }   from '../shared/index';
 
+import * as s from 'underscore.string';
+
 declare var firebase: any;
 
 
@@ -24,7 +26,7 @@ export class ListComponent implements OnInit {
 	nuts = [];
 	selectedNut;
 
-	constructor(private authService: AuthService, private dbService: FirebaseDBService) {
+	constructor(private authService: AuthService, private dbService: FirebaseDBService) {			
     }
 
 	removeCategory() {
@@ -74,7 +76,7 @@ export class ListComponent implements OnInit {
 	}
 
 	searchValueChanged(newValue:string) {
-		this.searchValue = newValue;
+		this.searchValue = s.trim(newValue);
 		this.filterData();
 	}
 
