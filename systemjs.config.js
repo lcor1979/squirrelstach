@@ -17,8 +17,8 @@
     'app':                        { main: 'main.js',  defaultExtension: 'js'},
     'rxjs':                       { defaultExtension: 'js' },
     'angular2-in-memory-web-api': { defaultExtension: 'js' },
-    'underscore': { main: 'underscore.js',  defaultExtension: 'js'},
-    'underscore.string': { main: 'underscore.string.js',  defaultExtension: 'js'},
+    'underscore': { main: 'underscore-min.js',  defaultExtension: 'js'},
+    'underscore.string': { main: 'underscore.string.min.js',  defaultExtension: 'js'},
   };
   var ngPackageNames = [
     'common',

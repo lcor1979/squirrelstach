@@ -1,8 +1,5 @@
 <ul id="accountMenu" class="dropdown-content">
-  <li><a href="#!">one</a></li>
-  <li><a href="#!">two</a></li>
-  <li class="divider"></li>
-  <li><a href="#!">three</a></li>
+  <li><a class="red-text text-lighten-1" href="javascript:void(0)" (click)="authService.disconnect()">Disconnect</a></li>
 </ul>
 <nav>
     <div class="nav-wrapper">
@@ -12,7 +9,9 @@
             <li [class.active]="isActive('List')"><a [routerLink]="['List']">List</a></li>
             <li [class.active]="isActive('Details')"><a [routerLink]="['Details']">Details</a></li>
             <li class="valign-wrapper">
-                <a class="valign dropdown-button" href="javascript:void()" data-activates="accountMenu"><img src="{{authService.user.photoURL}}" class="circle responsive-img avatar" alt="{{authService.user.displayName}}" title="{{authService.user.displayName}}" />
+                <a class="valign dropdown-button" href="javascript:void()" data-activates="accountMenu">
+                <img *ngIf="authService.user.photoURL" src="{{authService.user.photoURL}}" class="circle responsive-img avatar" alt="{{authService.user.displayName}}" title="{{authService.user.displayName}}" />
+                <i *ngIf="!authService.user.photoURL" class="large material-icons"title="{{authService.user.displayName}}">perm_identity</i>
                 </a>
             </li>
         </ul>

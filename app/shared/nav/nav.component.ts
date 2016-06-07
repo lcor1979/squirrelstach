@@ -23,7 +23,11 @@ export class Nav implements OnInit {
 
     ngOnInit() {
         jQuery(this.elementRef.nativeElement).find('.button-collapse').sideNav();
-        jQuery(this.elementRef.nativeElement).find('.dropdown-button').dropdown();
+        jQuery(this.elementRef.nativeElement).find('.dropdown-button').dropdown({
+            belowOrigin: true,
+            constrain_width: false,
+            alignment: 'right'
+        });
     }
 
     isActive(route:String):boolean {

@@ -7,8 +7,8 @@ declare var firebase: any;
 export class AuthService {
 
 	provider;
-	googleAccessToken;
-	user;
+	googleAccessToken: string;
+	user: User;
 
 	private userLoggedSubject = new Subject<any>();
 	private userLogged$ = this.userLoggedSubject.asObservable();
@@ -21,8 +21,21 @@ export class AuthService {
 		subscription.unsubscribe();
 	}
 
+	disconnect() {
+		firebase.auth().signOut().then(() => {
+			this.user = null;
+			this.userLoggedSubject.next(null);
+			firebase.auth().signInWithRedirect(this.provider);
+		}, function(error) {
+			// An error happened.
+		});
+	}
+	
 	startAuthentication() {
-		this.provider = new firebase.auth.GoogleAuthProvider();
+		if (!this.provider) {
+			this.provider = new firebase.auth.GoogleAuthProvider();
+		}
+		this.user = null;
 		this.userLoggedSubject.next(null);
 
 		firebase.auth().getRedirectResult().then(result => {
@@ -50,4 +63,15 @@ export class AuthService {
 			// ...
 		});
 	}
+}
+
+
+export interface User {
+    uid: string;
+    displayName: string;
+    email: string;
+    emailVerified: boolean;
+    isAnonymous: boolean;
+    photoURL: string;
+    refreshToken: string;
 }
