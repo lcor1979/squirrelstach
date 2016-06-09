@@ -4,12 +4,11 @@ import {ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 import {SessionStorage} from "angular2-localstorage/WebStorage";
 
 import { Nut } from '../shared/model';
-import { AuthService, FirebaseDBService }   from '../shared/index';
+import { AuthService, FirebaseDBService, DataHandler }   from '../shared/index';
 
 import * as s from 'underscore.string';
 
 declare var firebase: any;
-
 
 @Component({
 	moduleId: module.id,
@@ -18,10 +17,7 @@ declare var firebase: any;
 	templateUrl: 'list.component.html',
 	styleUrls: ['list.component.css']
 })
-export class ListComponent implements OnInit { 
-
-	private nutsReference;
-	private nutsListener;
+export class ListComponent extends DataHandler implements OnInit { 
 
 	@SessionStorage('list/searchFilter') filter: SearchFilter = {
 		searchValue: "",
@@ -32,7 +28,8 @@ export class ListComponent implements OnInit {
 	nuts: Nut[] = [];
 	selectedNut:Nut;
 
-	constructor(private authService: AuthService, private dbService: FirebaseDBService) {			
+	constructor(private authService: AuthService, protected dbService: FirebaseDBService) {		
+		super(dbService);	
     }
 
 	removeCategory() {
@@ -49,27 +46,16 @@ export class ListComponent implements OnInit {
 		return this.filter.category != null;
 	}
 
-	setupData() {
-		// Remove existing data handler
-		this.closeData();
-
-		// Get data reference
-		this.openDataReference();
-
-		// Add order clause
-		this.nutsListener = this.nutsReference.orderByChild('name').on('value', (data) => this.addNuts(data));
+	getDataReference(): string {
+		return 'staches/' + this.authService.user.uid + '/nuts';
 	}
 
-	private openDataReference() {
-		if (!this.nutsReference) {
-			this.nutsReference = this.dbService.getRef('staches/' + this.authService.user.uid + '/nuts');
-		}
+	getDataListenerType(): string {
+		return "value";
 	}
-	
-	private closeData() {
-		if (this.nutsReference && this.nutsListener) {
-			this.nutsReference.off('value', this.nutsListener);
-		}
+
+	setupDataReference(dataReference): any {
+		return dataReference.orderByChild('name').on(this.getDataListenerType(), (data) => this.addNuts(data));
 	}
 
 	private addNuts(data) {
@@ -115,4 +101,10 @@ export class ListComponent implements OnInit {
 
 	onSelect(nut) { this.selectedNut = nut; }
 
+}
+
+
+interface SearchFilter {
+	searchValue: string;
+	category: string;	
 }
