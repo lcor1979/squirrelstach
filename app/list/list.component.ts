@@ -1,6 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 
+import {SessionStorage} from "angular2-localstorage/WebStorage";
+
+import { Nut } from '../shared/model';
 import { AuthService, FirebaseDBService }   from '../shared/index';
 
 import * as s from 'underscore.string';
@@ -20,27 +23,30 @@ export class ListComponent implements OnInit {
 	private nutsReference;
 	private nutsListener;
 
-	searchValue: string;
-	category: string;
-	allNuts = [];
-	nuts = [];
-	selectedNut;
+	@SessionStorage('list/searchFilter') filter: SearchFilter = {
+		searchValue: "",
+		category: ""
+	};
+
+	allNuts:Nut[] = [];
+	nuts: Nut[] = [];
+	selectedNut:Nut;
 
 	constructor(private authService: AuthService, private dbService: FirebaseDBService) {			
     }
 
 	removeCategory() {
-		this.category = null;
-		this.filterData();
+		this.filter.category = null;
+		this.nuts = this.filterData(this.allNuts, this.filter);
 	}
 
 	setCategory(category:string) {
-		this.category = category;
-		this.filterData();
+		this.filter.category = category;
+		this.nuts = this.filterData(this.allNuts, this.filter);
 	}
 
 	hasCategory():boolean {
-		return this.category != null;
+		return this.filter.category != null;
 	}
 
 	setupData() {
@@ -72,29 +78,29 @@ export class ListComponent implements OnInit {
 		data.forEach(function(nut) {
 			self.allNuts.push(nut.val());
 		});
-		self.filterData();
+		self.nuts = self.filterData(self.allNuts, self.filter);
 	}
 
 	searchValueChanged(newValue:string) {
-		this.searchValue = s.trim(newValue);
-		this.filterData();
+		this.filter.searchValue = s.trim(newValue);
+		this.nuts = this.filterData(this.allNuts, this.filter);
 	}
 
-	private filterData() {
-		var toFilter = this.allNuts;
+	private filterData(allNuts: Nut[], filter: SearchFilter): Nut[] {
+		var toFilter = allNuts;
 		if (!toFilter) {
 			toFilter = [];
 		}
 
 		// Filter data on category and search value
-		var category = this.category;
+		var category = filter.category;
 		
 		var regexp: RegExp = undefined;
-		if (this.searchValue) {
-			regexp = new RegExp(this.searchValue, 'i');
+		if (filter.searchValue) {
+			regexp = new RegExp(filter.searchValue, 'i');
 		}
 		
-		this.nuts = toFilter.filter(function(nut) {
+		return toFilter.filter(function(nut:Nut) {
 			return (category ? (nut.category == category) : true) && (regexp ? regexp.test(nut.name) : true);
 		});
 	}

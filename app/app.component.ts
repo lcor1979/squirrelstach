@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { RouteConfig, ROUTER_DIRECTIVES } from '@angular/router-deprecated';
 
+import {LocalStorageService} from "angular2-localstorage/LocalStorageEmitter";
+
 import { Nav, AuthService }   from './shared/index';
 import { HomeComponent }   from './home/index';
 import { ListComponent }   from './list/index'; 
@@ -14,7 +16,7 @@ import { DetailsComponent }   from './details/index';
 		templateUrl: 'app.component.html',
 		styleUrls: ['app.component.css'],
 		directives: [Nav, ROUTER_DIRECTIVES],
-		providers: [AuthService]
+		providers: [LocalStorageService, AuthService]
 	})
 	@RouteConfig([
 		{ path: '/', name: 'Home', component: HomeComponent, useAsDefault: true },
@@ -27,7 +29,10 @@ import { DetailsComponent }   from './details/index';
 		userIsLogged: boolean;
 		zone: NgZone;
 
-		constructor(private authService: AuthService, zone: NgZone) {
+		constructor(
+			private storageService: LocalStorageService, 
+			private authService: AuthService, 
+			zone: NgZone) {
 			this.userIsLogged = false;
 			this.zone = zone;
 		}

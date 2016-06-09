@@ -2,7 +2,7 @@
 <nav>
     <form style="margin-top: 10px; margin-bottom: 10px">
         <div class="input-field">
-            <input id="search" #search type="search" (keyup)="searchValueChanged(search.value)" required>
+                <input id="search" #search type="search" [ngModel]="filter.searchValue" (keyup)="searchValueChanged(search.value)" required>
             <label for="search"><i class="material-icons">search</i></label>
             <i class="material-icons">close</i>
         </div>
@@ -11,7 +11,7 @@
 <div class="search-category-field">Current category:
     <div *ngIf="!hasCategory()" class="chip search-category">All
     </div>
-    <div *ngIf="hasCategory()" class="chip search-category">{{category}}<i class="material-icons circle" (click)="removeCategory()">close</i>
+    <div *ngIf="hasCategory()" class="chip search-category">{{filter.category}}<i class="material-icons circle" (click)="removeCategory()">close</i>
     </div>
 </div>
 <ul class="collection">
