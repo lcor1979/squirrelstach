@@ -16,7 +16,7 @@ import { DetailsComponent }   from './details/index';
 		templateUrl: 'app.component.html',
 		styleUrls: ['app.component.css'],
 		directives: [Nav, ROUTER_DIRECTIVES],
-		providers: [LocalStorageService, AuthService]
+		providers: [LocalStorageService]
 	})
 	@RouteConfig([
 		{ path: '/', name: 'Home', component: HomeComponent, useAsDefault: true },
@@ -45,7 +45,6 @@ import { DetailsComponent }   from './details/index';
 		}
 
 		private updateUserStatus(user: User) {			
-			this.nutsService.userChanged(user); // TODO Remove me when subscriptio on nut service will work
 			if (user) {
 				this.userIsLogged = true;
 			}
@@ -57,6 +56,9 @@ import { DetailsComponent }   from './details/index';
 		ngOnDestroy() {
 			if (this.subscription) {
 				this.authService.removeUserLoggedHandler(this.subscription);
+			}
+			if (this.nutsService) {
+				this.nutsService.close();
 			}
 		}
 	}

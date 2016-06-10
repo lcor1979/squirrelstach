@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 
 import {SessionStorage} from "angular2-localstorage/WebStorage";
 
@@ -23,9 +23,9 @@ export class NutsService {
 	allNuts: Nut[] = [];
 	nuts: Nut[] = [];
 
-	constructor(protected authService: AuthService, protected dbService: FirebaseDBService) {
-		// TODO : Not working, fix me
-		this.authSubscription = this.authService.addUserLoggedHandler((user) => this.userChanged(user));
+	constructor(protected authService: AuthService, protected dbService: FirebaseDBService,
+		zone: NgZone) {
+		this.authSubscription = this.authService.addUserLoggedHandler((user) => zone.run(() => this.userChanged(user)));
     }
 
     userChanged(user:User) {
