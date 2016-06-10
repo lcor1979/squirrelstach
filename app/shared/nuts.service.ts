@@ -11,6 +11,7 @@ import * as s from 'underscore.string';
 export class NutsService {
 
 	private authSubscription;
+	private nutsReference;
 	private nutsListDescriptor: DataDescriptor;
 
 	@SessionStorage('nut/list/searchFilter') filter: SearchFilter = {
@@ -20,19 +21,20 @@ export class NutsService {
 
 	currentUserId: string;
 
-	allNuts: Nut[] = [];
+	private allNuts: Nut[] = [];
 	nuts: Nut[] = [];
 
-	constructor(protected authService: AuthService, protected dbService: FirebaseDBService,
+	constructor(private authService: AuthService, private dbService: FirebaseDBService,
 		zone: NgZone) {
 		this.authSubscription = this.authService.addUserLoggedHandler((user) => zone.run(() => this.userChanged(user)));
-    }
+	}
 
-    userChanged(user:User) {
+    private userChanged(user: User) {
     	if (!user || (this.currentUserId != user.uid)) {
     		if (user) {
 				this.currentUserId = user.uid;
-				this.nutsListDescriptor = this.setupDataDescriptorReference(this.nutsListDescriptor, 'value','staches/' + this.currentUserId + '/nuts');
+				this.nutsReference = this.dbService.getRef('staches/' + this.currentUserId + '/nuts');
+				this.nutsListDescriptor = this.setupDataDescriptorReference(this.nutsListDescriptor, 'value', this.nutsReference);
 				this.nutsListDescriptor.on(this.nutsListDescriptor.dataReference.orderByChild('name'), (data) => this.addNuts(data));
     		}
     		else {
@@ -47,7 +49,7 @@ export class NutsService {
     	}
     }
 
-    setupDataDescriptorReference(dataDescriptor: DataDescriptor, listenerType:string, reference: string): DataDescriptor {
+    private setupDataDescriptorReference(dataDescriptor: DataDescriptor, listenerType: string, reference): DataDescriptor {
 		if (dataDescriptor) {
 			dataDescriptor.close();
 		}
@@ -56,10 +58,42 @@ export class NutsService {
 		}
 
 		dataDescriptor.dataListenerType = listenerType;
-		dataDescriptor.dataReference = this.dbService.getRef(reference);
+		dataDescriptor.dataReference = reference;
 
 		return dataDescriptor;
     }
+
+
+	private addNuts(data) {
+		var self = this;
+		self.allNuts = [];
+		data.forEach(function(nut) {
+			var nutValue: Nut = nut.val();
+			nutValue.id = nut.getKey();
+			self.allNuts.push(nutValue);
+		});
+		self.nuts = self.filterData(self.allNuts, self.filter);
+	}
+
+
+	private filterData(allNuts: Nut[], filter: SearchFilter): Nut[] {
+		var toFilter = allNuts;
+		if (!toFilter) {
+			toFilter = [];
+		}
+
+		// Filter data on category and search value
+		var category = filter.category;
+
+		var regexp: RegExp = undefined;
+		if (filter.searchValue) {
+			regexp = new RegExp(filter.searchValue, 'i');
+		}
+
+		return toFilter.filter(function(nut: Nut) {
+			return (category ? (nut.category == category) : true) && (regexp ? regexp.test(nut.name) : true);
+		});
+	}
 
 	close() {
 		if (this.authSubscription) {
@@ -84,40 +118,21 @@ export class NutsService {
 		return this.filter.category != null;
 	}
 
-	private addNuts(data) {
-		var self = this;
-		self.allNuts = [];
-		data.forEach(function(nut) {
-			var nutValue: Nut = nut.val();
-			nutValue.id = nut.getKey();
-			self.allNuts.push(nutValue);
-		});
-		self.nuts = self.filterData(self.allNuts, self.filter);
-	}
-
 	searchValueChanged(newValue: string) {
 		this.filter.searchValue = s.trim(newValue);
 		this.nuts = this.filterData(this.allNuts, this.filter);
 	}
 
-	private filterData(allNuts: Nut[], filter: SearchFilter): Nut[] {
-		var toFilter = allNuts;
-		if (!toFilter) {
-			toFilter = [];
+	getNutById(id, callback: (nut:Nut) => void) {
+		if (this.nutsReference) {
+			this.nutsReference.child(id).once('value', data => {
+				var nutValue: Nut = data.val();
+				nutValue.id = data.getKey();
+				callback(nutValue);
+			});
 		}
-
-		// Filter data on category and search value
-		var category = filter.category;
-
-		var regexp: RegExp = undefined;
-		if (filter.searchValue) {
-			regexp = new RegExp(filter.searchValue, 'i');
-		}
-
-		return toFilter.filter(function(nut: Nut) {
-			return (category ? (nut.category == category) : true) && (regexp ? regexp.test(nut.name) : true);
-		});
 	}
+	
 }
 
 
@@ -140,7 +155,6 @@ class DataDescriptor {
 	close() {
 		if (this.dataReference && this.dataListener) {
 			this.dataReference.off(this.dataListenerType, this.dataListener);
-			this.dataReference = null;
 			this.dataListener = null;
 			this.dataListenerType = null;
 		}

@@ -1,5 +1,5 @@
 
-export interface Nut {
+export class Nut {
 	id: number;
 	name: string;
 	notes: string;
@@ -7,7 +7,7 @@ export interface Nut {
 	category: string;
 }
 
-export interface Quantity {
+export class Quantity {
 	amount: number;
 	unit: string;
 }
