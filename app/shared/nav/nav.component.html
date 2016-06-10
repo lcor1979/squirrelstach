@@ -7,7 +7,7 @@
         <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down">
             <li [class.active]="isActive('List')"><a [routerLink]="['List']">List</a></li>
-            <li [class.active]="isActive('Details')"><a [routerLink]="['Details']">Details</a></li>
+            <li [class.active]="isActive('Create')"><a [routerLink]="['Create']">Create</a></li>
             <li class="valign-wrapper">
                 <a class="valign dropdown-button" href="javascript:void()" data-activates="accountMenu">
                 <img *ngIf="authService.user.photoURL" src="{{authService.user.photoURL}}" class="circle responsive-img avatar" alt="{{authService.user.displayName}}" title="{{authService.user.displayName}}" />
@@ -19,7 +19,7 @@
             <li *ngIf="authService.user"><img src="{{authService.user.photoURL}}" class="circle responsive-img avatar" width="46px" height="46px" alt="{{authService.user.displayName}}" title="{{authService.user.displayName}}" /> {{authService.user.displayName}}
             </li>
             <li [class.active]="isActive('List')"><a [routerLink]="['List']">List</a></li>
-            <li [class.active]="isActive('Details')"><a [routerLink]="['Details']">Details</a></li>
+            <li [class.active]="isActive('Create')"><a [routerLink]="['Create']">Create</a></li>
         </ul>
     </div>
 </nav>

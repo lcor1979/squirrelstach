@@ -3,7 +3,7 @@ import { RouteConfig, ROUTER_DIRECTIVES } from '@angular/router-deprecated';
 
 import {LocalStorageService} from "angular2-localstorage/LocalStorageEmitter";
 
-import { Nav, AuthService }   from './shared/index';
+import { Nav, AuthService, NutsService, User }   from './shared/index';
 import { HomeComponent }   from './home/index';
 import { ListComponent }   from './list/index'; 
 import { DetailsComponent }   from './details/index'; 
@@ -21,7 +21,8 @@ import { DetailsComponent }   from './details/index';
 	@RouteConfig([
 		{ path: '/', name: 'Home', component: HomeComponent, useAsDefault: true },
 		{ path: '/list', name: 'List', component: ListComponent },
-		{ path: '/details', name: 'Details', component: DetailsComponent }
+		{ path: '/create', name: 'Create', component: DetailsComponent },
+		{ path: '/details/:id', name: 'Details', component: DetailsComponent }
 	]) 
 	export class AppComponent implements OnInit, OnDestroy { 
 
@@ -32,6 +33,7 @@ import { DetailsComponent }   from './details/index';
 		constructor(
 			private storageService: LocalStorageService, 
 			private authService: AuthService, 
+			private nutsService: NutsService,
 			zone: NgZone) {
 			this.userIsLogged = false;
 			this.zone = zone;
@@ -42,7 +44,8 @@ import { DetailsComponent }   from './details/index';
 			this.authService.startAuthentication();
 		}
 
-		private updateUserStatus(user) {
+		private updateUserStatus(user: User) {			
+			this.nutsService.userChanged(user); // TODO Remove me when subscriptio on nut service will work
 			if (user) {
 				this.userIsLogged = true;
 			}

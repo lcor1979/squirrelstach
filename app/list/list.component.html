@@ -16,11 +16,11 @@
 </div>
 <ul class="collection">
     <a *ngFor="let nut of nuts" class="collection-item avatar"  [class.active]="nut == selectedNut">
-    <div (click)="onSelect(nut)">
+    <a (click)="onSelect(nut)" [routerLink]="['Details', {id:nut.id}]" name="#{{nut.id}}">
         <i class="material-icons red circle">shopping_basket</i>
         <span class="title truncate">{{nut.name}}</span>
         <p>{{nut.quantity.amount}} {{nut.quantity.unit}}</p>
-        <p class="notes truncate">{{nut.notes}}</p></div>
+        <p class="notes truncate">{{nut.notes}}</p></a>
         
         <div class="secondary-content">
             <a class="chip" href="javascript:void(0)" (click)="setCategory(nut.category)">{{nut.category}}</a>
@@ -28,7 +28,7 @@
     </a>
 </ul>
 <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
-    <a [routerLink]="['Details']" class="btn-floating btn-large red">
+    <a [routerLink]="['Create']" class="btn-floating btn-large red">
         <i class="large material-icons">add</i>
     </a>
 </div>

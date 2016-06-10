@@ -5,9 +5,13 @@ import { LocationStrategy,
 	PathLocationStrategy  } from '@angular/common';
 
 import { AppComponent } from './app.component';
+import { AuthService, FirebaseDBService, NutsService } from './shared/index';
 
 bootstrap(AppComponent, [
   ROUTER_PROVIDERS,
   provide(LocationStrategy,
-	  { useClass: PathLocationStrategy }) 
+	  { useClass: PathLocationStrategy }),
+  AuthService,
+  FirebaseDBService,
+  NutsService
 ]);
