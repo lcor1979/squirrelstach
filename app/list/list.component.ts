@@ -4,7 +4,7 @@ import {ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 import {SessionStorage} from "angular2-localstorage/WebStorage";
 
 import { Nut } from '../shared/model';
-import { NutsService, SearchFilter }   from '../shared/index';
+import { NutsService, SearchFilter, NavService, NavigationItem }   from '../shared/index';
 
 import * as s from 'underscore.string';
 
@@ -14,11 +14,12 @@ import * as s from 'underscore.string';
 	templateUrl: 'list.component.html',
 	styleUrls: ['list.component.css']
 })
-export class ListComponent extends implements OnInit, OnDestroy { 
+export class ListComponent implements OnInit, OnDestroy { 
 
 	selectedNut:Nut;
 
-	constructor(protected nutsService: NutsService) {		
+	constructor(private nutsService: NutsService,
+				private navService: NavService) {		
     }
 
 	removeCategory() {
@@ -46,6 +47,9 @@ export class ListComponent extends implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
+		this.navService.changeNavigationItems([ 
+		new NavigationItem(this, 'add', 'Add')
+		]);
 	}
 
 	ngOnDestroy() {

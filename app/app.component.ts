@@ -3,8 +3,8 @@ import { RouteConfig, ROUTER_DIRECTIVES } from '@angular/router-deprecated';
 
 import {LocalStorageService} from "angular2-localstorage/LocalStorageEmitter";
 
-import { Nav, AuthService, NutsService, User }   from './shared/index';
-import { HomeComponent }   from './home/index';
+import { Nav, NavService, AuthService, NutsService, User }   from './shared/index';
+import { AddComponent }   from './add/index';
 import { ListComponent }   from './list/index'; 
 import { DetailsComponent }   from './details/index'; 
 
@@ -19,9 +19,8 @@ import { DetailsComponent }   from './details/index';
 		providers: [LocalStorageService]
 	})
 	@RouteConfig([
-		{ path: '/', name: 'Home', component: HomeComponent, useAsDefault: true },
-		{ path: '/list', name: 'List', component: ListComponent },
-		{ path: '/create', name: 'Create', component: DetailsComponent },
+		{ path: '/', name: 'Home', component: ListComponent, useAsDefault: true },
+		{ path: '/add', name: 'Add', component: AddComponent },
 		{ path: '/details/:id', name: 'Details', component: DetailsComponent }
 	]) 
 	export class AppComponent implements OnInit, OnDestroy { 
@@ -34,6 +33,7 @@ import { DetailsComponent }   from './details/index';
 			private storageService: LocalStorageService, 
 			private authService: AuthService, 
 			private nutsService: NutsService,
+			private navService: NavService,
 			zone: NgZone) {
 			this.userIsLogged = false;
 			this.zone = zone;

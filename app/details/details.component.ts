@@ -4,7 +4,7 @@ import {ROUTER_DIRECTIVES, RouteParams } from '@angular/router-deprecated';
 import {SessionStorage} from "angular2-localstorage/WebStorage";
 
 import { Nut } from '../shared/model';
-import { NutsService }   from '../shared/index';
+import { NutsService, NavService, NavigationItem }   from '../shared/index';
 
 @Component({
 	moduleId: module.id,
@@ -17,17 +17,31 @@ export class DetailsComponent implements OnInit {
 	nutId;
 	nut: Nut;
 
-	constructor(protected nutsService: NutsService,
+	constructor(private navService: NavService,
+		private nutsService: NutsService,
 		routeParams: RouteParams) {
 		this.nut = new Nut();
 		this.nutId = routeParams.get("id");
     }
 
     ngOnInit() {
+		this.navService.changeNavigationItems([
+			new NavigationItem(this, 'cancel', 'Home'),
+			new NavigationItem(this, 'edit', null, this.edit),
+			new NavigationItem(this, 'delete', null, this.delete)
+		]);
 		this.nutsService.getNutById(this.nutId, (nut) => this.nutLoaded(nut));
     }
 
-    private nutLoaded(nut:Nut) {
+    edit(): void {
+		alert('edit');
+    }
+
+    delete(): void {
+		alert('delete');
+    }
+
+    private nutLoaded(nut: Nut) {
 		this.nut = nut;
     }
 
