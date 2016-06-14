@@ -5,6 +5,10 @@ export class Nut {
 	notes: string;
 	quantity: Quantity;
 	category: string;
+
+	constructor() {
+		this.quantity = new Quantity();
+	}
 }
 
 export class Quantity {

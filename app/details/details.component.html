@@ -1,2 +1,16 @@
-<h1 class="center">{{nut.name}}</h1>
-
+<div class="row">
+    <div class="col col s12 m6 offset-m3 l6 offset-l3">
+        <div class="card medium">
+            <div class="card-image">
+                <h1 class="card-title">{{nut.name}}</h1>
+            </div>
+            <div class="card-content">
+                <p>{{nut.notes}}</p>
+                <p><a href="test" class="material-icons small red circle small-button">remove</a><input type="text" [(ngModel)]="nut.quantity.amount"/><a class="material-icons small red circle small-button">add</a> {{nut.quantity.unit}}</p>
+            </div>
+            <div class="card-action">
+                <div class="chip">{{nut.category}}</div>
+            </div>
+        </div>
+    </div>
+</div>
