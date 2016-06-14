@@ -16,7 +16,7 @@
 </div>
 <ul class="collection">
     <a *ngFor="let nut of nuts" class="collection-item avatar"  [class.active]="nut == selectedNut">
-    <a (click)="onSelect(nut)" [routerLink]="['Details', {id:nut.id}]" name="#{{nut.id}}">
+    <a (click)="onSelect(nut)" [routerLink]="['Details', {id:nut.id}]" name="#{{nut.id}}" class="nut-item">
         <i class="material-icons red circle">shopping_basket</i>
         <span class="title truncate">{{nut.name}}</span>
         <p>{{nut.quantity.amount}} {{nut.quantity.unit}}</p>

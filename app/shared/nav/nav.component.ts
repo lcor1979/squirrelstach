@@ -44,9 +44,9 @@ export class Nav implements OnInit {
     }
 
     navigationChanged(items:NavigationItem[]):void {
+        // We cannot change the reference of this.items here because it will cause an error in the Angular change detection
         this.items.splice(0, this.items.length);
         Array.prototype.push.apply(this.items, items);
-        //this.items = items;
     }
 
     isActive(route:String):boolean {
