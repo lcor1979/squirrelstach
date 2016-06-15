@@ -1,66 +1,106 @@
 import { Injectable } from '@angular/core';
 import { Subject }    from 'rxjs/Subject';
 
+import {SessionStorage} from "angular2-localstorage/WebStorage";
+
 declare var firebase: any;
 
 @Injectable()
 export class AuthService {
 
-	provider;
-	googleAccessToken: string;
-	user: User;
+	private provider;
+	@SessionStorage('squirrelstach/auth/sessionId') private googleAccessToken: string;
 
 	private userLoggedSubject = new Subject<any>();
 	private userLogged$ = this.userLoggedSubject.asObservable();
 
+	// The current user
+	user: User;
+
+	/**
+	 * Handler called when logged in user change
+	 */
 	addUserLoggedHandler(handler):any {
 		return this.userLogged$.subscribe(user => handler(user));
 	}
 
+	/**
+	 * Remove handler called when logged in user change
+	 */
 	removeUserLoggedHandler(subscription) {
 		subscription.unsubscribe();
 	}
 
+	/**
+	 * Disconnect user and invalidate session token
+	 */
 	disconnect() {
 		firebase.auth().signOut().then(() => {
-			this.user = null;
-			this.userLoggedSubject.next(null);
+			this.setLoggedUser(null);
+			this.googleAccessToken = null; // Invalidate session token
 			firebase.auth().signInWithRedirect(this.provider);
 		}, function(error) {
-			// An error happened.
+			console.log("Error during disconnect: " + error);
 		});
 	}
 	
+	/**
+	 * Start authentication process
+	 */
 	startAuthentication() {
 		if (!this.provider) {
 			this.provider = new firebase.auth.GoogleAuthProvider();
 		}
-		this.user = null;
-		this.userLoggedSubject.next(null);
 
+		// Clear current user
+		this.setLoggedUser(null);
+
+		// Check if we have a session token
+		if (this.googleAccessToken) {
+
+			// Create a credential based on the token
+			var credential = firebase.auth.GoogleAuthProvider.credential(this.googleAccessToken);
+
+			// Sign in with credential
+			firebase.auth().signInWithCredential(credential)
+				.then(user => this.setLoggedUser(user))
+				.catch(error => { 
+					console.log("Error during authentication with credential: " + error);
+					this.googleAccessToken = null;
+					this.redirectToAuthentication();
+				});
+		}
+		// No credential, redirect to authentication
+		else {
+			this.redirectToAuthentication();
+		}		
+	}
+
+	protected setLoggedUser(user) {
+		this.user = user;
+		this.userLoggedSubject.next(this.user);
+	}
+
+	protected redirectToAuthentication() {
+
+		// Add redirect result handler
 		firebase.auth().getRedirectResult().then(result => {
+
+			// If handler called with null => No logged user, trigger signInWithRedirect
 			if (!result.user) {
 				firebase.auth().signInWithRedirect(this.provider);
 				return;
-			} 
+			}
 
+			// If result has a credential, save the session token
 			if (result.credential) {
-				// This gives you a Google Access Token. You can use it to access the Google API.
 				this.googleAccessToken = result.credential.idToken;
 			}
-			// The signed-in user info.
-			this.user = result.user;
-			this.userLoggedSubject.next(this.user);
+
+			// Set the current user
+			this.setLoggedUser(result.user);
 		}).catch(function(error) {
-			// Handle Errors here.
-			var errorCode = error.code;
-			var errorMessage = error.message;
-			alert('Error: ' + errorMessage);
-			// The email of the user's account used.
-			var email = error.email;
-			// The firebase.auth.AuthCredential type that was used.
-			var credential = error.credential;
-			// ...
+			console.log("Error during authentication wuth redirect: " + error);
 		});
 	}
 }

@@ -14,7 +14,7 @@ export class NutsService {
 	private nutsReference;
 	private nutsListDescriptor: DataDescriptor;
 
-	@SessionStorage('nut/list/searchFilter') filter: SearchFilter = {
+	@SessionStorage('squirrelstach/nuts/searchFilter') filter: SearchFilter = {
 		searchValue: "",
 		category: null
 	};
