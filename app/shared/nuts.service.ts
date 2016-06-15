@@ -132,6 +132,15 @@ export class NutsService {
 			});
 		}
 	}
+
+	updateNutQuantity(id, quantity: number, callback?: (newQuantity: number, error?: string) => void) {
+		if (this.nutsReference) {
+			this.nutsReference.child(id + "/quantity/amount").set(quantity)
+				.then(() =>	callback(quantity))
+				.catch((error) => callback(quantity, error));
+		}
+
+	}
 	
 }
 

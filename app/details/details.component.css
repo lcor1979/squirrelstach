@@ -1,5 +1,4 @@
 .card-action {
-	    background-color: #ee6e73;
 }
 
 .card-image {
@@ -7,8 +6,14 @@
 	background-color: #ee6e73;
 }
 
+
 .small-button {
 	color: #FFFFFF;
     margin: 5px;
-    font-size: 1rem;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.quantity-field {
+	width: 40px;
 }

@@ -5,11 +5,13 @@
                 <h1 class="card-title">{{nut.name}}</h1>
             </div>
             <div class="card-content">
-                <p>{{nut.notes}}</p>
-                <p><a href="test" class="material-icons small red circle small-button">remove</a><input type="text" [(ngModel)]="nut.quantity.amount"/><a class="material-icons small red circle small-button">add</a> {{nut.quantity.unit}}</p>
+                <div class="chip right">{{nut.category}}</div>
+                <p>{{nut.notes}}</p>                
             </div>
-            <div class="card-action">
-                <div class="chip">{{nut.category}}</div>
+            <div class="card-action center">
+                <span class="left"><i (click)="decrementQuantity()" class="material-icons small red lighten-1 circle small-button">remove</i></span>
+                <input class="quantity-field" type="text" [(ngModel)]="quantity" maxlength="3" /> <span>{{nut.quantity.unit}}</span>
+                <span class="right"><i (click)="incrementQuantity()" class="material-icons small red lighten-1 circle small-button">add</i></span>
             </div>
         </div>
     </div>
