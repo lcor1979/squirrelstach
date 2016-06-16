@@ -48,7 +48,7 @@ export class ListComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		this.navService.changeNavigationItems([ 
-		new NavigationItem(this, 'add', 'Add')
+		new NavigationItem(this, 'add', ['Add'])
 		]);
 	}
 

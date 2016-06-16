@@ -28,10 +28,10 @@ export class NavigationItem {
 	owner: any;
 	icon: string;
 
-	route: string;
+	route: any[];
 	handler: () => void;
 
-	constructor(owner: any, icon: string, route: string, handler?: () => void) {
+	constructor(owner: any, icon: string, route: any[], handler?: () => void) {
 		this.owner = owner;
 		this.icon = icon;
 		this.route = route;

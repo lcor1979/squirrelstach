@@ -30,8 +30,8 @@ export class DetailsComponent implements OnInit {
 
     ngOnInit() {
 		this.navService.changeNavigationItems([
-			new NavigationItem(this, 'arrow_back', 'Home'),
-			new NavigationItem(this, 'edit', null, this.edit),
+			new NavigationItem(this, 'arrow_back', ['Home']),
+			new NavigationItem(this, 'edit', ['Edit', {id: this.nutId}]),
 			new NavigationItem(this, 'delete', null, this.delete)
 		]);
 		this.nutsService.getNutById(this.nutId, (nut) => this.nutLoaded(nut));

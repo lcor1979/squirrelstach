@@ -7,6 +7,7 @@ import { Nav, NavService, AuthService, NutsService, User }   from './shared/inde
 import { AddComponent }   from './add/index';
 import { ListComponent }   from './list/index'; 
 import { DetailsComponent }   from './details/index'; 
+import { EditComponent }   from './edit/index'; 
 
 
 
@@ -22,6 +23,7 @@ import { DetailsComponent }   from './details/index';
 		{ path: '/', name: 'Home', component: ListComponent, useAsDefault: true },
 		{ path: '/add', name: 'Add', component: AddComponent },
 		{ path: '/details/:id', name: 'Details', component: DetailsComponent }
+		{ path: '/edit/:id', name: 'Edit', component: EditComponent }
 	]) 
 	export class AppComponent implements OnInit, OnDestroy { 
 
