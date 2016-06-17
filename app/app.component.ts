@@ -22,7 +22,7 @@ import { EditComponent }   from './edit/index';
 	@RouteConfig([
 		{ path: '/', name: 'Home', component: ListComponent, useAsDefault: true },
 		{ path: '/add', name: 'Add', component: AddComponent },
-		{ path: '/details/:id', name: 'Details', component: DetailsComponent }
+		{ path: '/details/:id', name: 'Details', component: DetailsComponent },
 		{ path: '/edit/:id', name: 'Edit', component: EditComponent }
 	]) 
 	export class AppComponent implements OnInit, OnDestroy { 

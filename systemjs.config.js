@@ -12,6 +12,8 @@
     'underscore': 'node_modules/underscore',
     'underscore.string': 'node_modules/underscore.string/dist',
     'angular2-localstorage': 'node_modules/angular2-localstorage',
+    'materialize': 'node_modules/angular2-materialize',
+    'angular2-materialize': 'node_modules/angular2-materialize',
   };
   // packages tells the System loader how to load when no filename and/or no extension
   var packages = {
@@ -21,6 +23,7 @@
     'underscore': { main: 'underscore-min.js',  defaultExtension: 'js'},
     'underscore.string': { main: 'underscore.string.min.js',  defaultExtension: 'js'},
     'angular2-localstorage': { defaultExtension: 'js'},
+    'materialize': { main: 'dist/materialize-directive', defaultExtension: 'js'},
   };
   var ngPackageNames = [
     'common',

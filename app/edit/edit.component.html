@@ -1,15 +1,15 @@
 <div class="row">
-    <form class="col s12">
+    <form materialize class="col s12">
       <div class="row">
         <div class="input-field col s12 m6 l6 ">
-          <input id="name" [(ngModel)]="nut.name" type="text" required class="validate" ngControl="name"/>
+          <input id="name" [(ngModel)]="nut.name" placeholder="" type="text" required class="validate" ngControl="name"/>
           <label for="name" class="active">Name</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12 m6 l6">
-            <select required [(ngModel)]="nut.category">
-              <option value="" disabled [selected]="!nut.category">Choose the category</option>
+            <select materialize="material_select" [materializeSelectOptions]="categories" required [(ngModel)]="nut.category">
+              <option value="" disabled>Choose the category</option>
               <option *ngFor="let category of categories" [value]="category">{{category}}</option>
             </select>
             <label>Category</label>
@@ -17,15 +17,13 @@
       </div>
       <div class="row">
         <div class="input-field col s4 m2">
-          <input id="name" [(ngModel)]="nut.quantity.amount" type="text" required class="validate"/>
+          <input id="name" [(ngModel)]="nut.quantity.amount" placeholder="" type="text" required class="validate"/>
           <label for="name" class="active">Amount</label>
         </div>
         <div class="input-field col s8 m4">
-            <select required [(ngModel)]="nut.quantity.unit">
-              <option value="" disabled selected>Choose the unit</option>
-              <option value="1">Option 1</option>
-              <option value="2">Option 2</option>
-              <option value="3">Option 3</option>
+            <select materialize="material_select" [materializeSelectOptions]="units" required [(ngModel)]="nut.quantity.unit">
+              <option value="" disabled>Choose the unit</option>
+              <option *ngFor="let unit of units" [value]="unit">{{unit}}</option>
             </select>
             <label>Unit</label>
         </div>

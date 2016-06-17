@@ -1,17 +1,15 @@
 import { Component, OnInit, OnDestroy, ElementRef, Inject, AfterViewInit } from '@angular/core';
 import {ROUTER_DIRECTIVES, RouteParams } from '@angular/router-deprecated';
 
-import {SessionStorage} from "angular2-localstorage/WebStorage";
+import {MaterializeDirective} from 'angular2-materialize';
 
 import { Nut } from '../shared/model';
 import { NutsService, NavService, NavigationItem }   from '../shared/index';
 
 declare var Materialize: any;
-declare var jQuery: any;
-
 @Component({
 	moduleId: module.id,
-    directives: [ROUTER_DIRECTIVES],
+    directives: [ROUTER_DIRECTIVES, MaterializeDirective],
 	templateUrl: 'edit.component.html',
 	styleUrls: ['edit.component.css']
 })
@@ -27,6 +25,15 @@ export class EditComponent implements OnInit, AfterViewInit {
 		"Accompagnements"
 	];
 
+	units: string[] = [
+		"Boîte(s)",
+		"Pot(s)",
+		"Kg",
+		"Paquet(s)",
+		"Pièce(s)",
+		"Sachet(s)"
+	];
+	
 	elementRef: ElementRef;
 
 	private toastDisplayed: boolean;
@@ -57,8 +64,7 @@ export class EditComponent implements OnInit, AfterViewInit {
 		alert('delete');
     }
 
-    ngAfterViewInit() {
-		jQuery(this.elementRef.nativeElement).find('select').material_select();
+    ngAfterViewInit() {		
     }
 
     protected displayToast(text) {
