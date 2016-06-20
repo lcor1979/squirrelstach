@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, ElementRef, Inject, AfterViewInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
+import { FormBuilder, Validators, ControlGroup, Control } from '@angular/common';
 import {ROUTER_DIRECTIVES, RouteParams } from '@angular/router-deprecated';
 
 import {MaterializeDirective} from 'angular2-materialize';
@@ -13,16 +14,16 @@ declare var Materialize: any;
 	templateUrl: 'edit.component.html',
 	styleUrls: ['edit.component.css']
 })
-export class EditComponent implements OnInit, AfterViewInit { 
+export class EditComponent implements OnInit { 
 
 	nutId;
-	nut: Nut;
 
 	categories: string[] = [
 		"Apéritif",
 		"Viande",
 		"Légumes",
-		"Accompagnements"
+		"Accompagnements",
+		"Général"
 	];
 
 	units: string[] = [
@@ -34,37 +35,47 @@ export class EditComponent implements OnInit, AfterViewInit {
 		"Sachet(s)"
 	];
 	
-	elementRef: ElementRef;
-
 	private toastDisplayed: boolean;
+
+	form: ControlGroup;
 
 	constructor(private navService: NavService,
 		private nutsService: NutsService,
-		routeParams: RouteParams,
-   		@Inject(ElementRef) elementRef: ElementRef) {
-        this.elementRef = elementRef;
-		this.nut = new Nut();
+		routeParams: RouteParams, builder: FormBuilder) {
 		this.nutId = routeParams.get("id");
+
+		this.form = builder.group({
+            "name": new Control("", Validators.required),
+            "category": new Control("Général", Validators.required),
+            "quantity": builder.group({
+				"amount": new Control("", Validators.compose([Validators.required, Validators.pattern("[0-9]{1,3}")])),
+				"unit": new Control("", Validators.required)
+			}),            
+            "notes": new Control("")
+        });
     }
 
     ngOnInit() {
 		this.navService.changeNavigationItems([
 			new NavigationItem(this, 'cancel', ['Details', {id:this.nutId}]),
-			new NavigationItem(this, 'done', null, this.save),
-			new NavigationItem(this, 'delete', null, this.delete)
+			new NavigationItem(this, 'done', null, () => this.save(), () => { return this.isDirtyAndValid() }),
+			new NavigationItem(this, 'delete', null,() => this.delete())
 		]);
 		this.nutsService.getNutById(this.nutId, (nut) => this.nutLoaded(nut));
     }
 
+    isDirtyAndValid() {
+		return this.form.dirty && this.form.valid;
+    }
+
     save(): void {
-		alert('edit');
+		if (this.isDirtyAndValid()) {
+			alert("valid");
+		}
     }
 
     delete(): void {
 		alert('delete');
-    }
-
-    ngAfterViewInit() {		
     }
 
     protected displayToast(text) {
@@ -75,7 +86,12 @@ export class EditComponent implements OnInit, AfterViewInit {
     }
 
     private nutLoaded(nut: Nut) {
-		this.nut = nut;
+		this.form.controls['name'].updateValue(nut.name);
+		this.form.controls['category'].updateValue(nut.category);
+		this.form.controls['quantity'].controls['amount'].updateValue(nut.quantity.amount);
+		this.form.controls['quantity'].controls['unit'].updateValue(nut.quantity.unit);
+		this.form.controls['notes'].updateValue(nut.notes);
+		console.log(nut);
     }
 
 }

@@ -7,7 +7,7 @@
         <ul class="right ">
             <li *ngFor="let item of items">
                 <a *ngIf="item.route" [routerLink]="item.route"><i class="material-icons">{{item.icon}}</i></a>
-                <a *ngIf="item.handler" (click)="execute(item)"><i class="material-icons">{{item.icon}}</i></a>
+                <a *ngIf="item.handler" (click)="execute(item)" [class.disabled]="isDisabled(item)"><i class="material-icons">{{item.icon}}</i></a>
             </li>
             <li class="valign-wrapper">
                 <a class="valign dropdown-button" href="javascript:void(0)" data-activates="accountMenu">

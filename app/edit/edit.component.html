@@ -1,27 +1,27 @@
 <div class="row">
-    <form materialize class="col s12">
+    <form materialize class="col s12" [ngFormModel]="form">
       <div class="row">
         <div class="input-field col s12 m6 l6 ">
-          <input id="name" [(ngModel)]="nut.name" placeholder="" type="text" required class="validate" ngControl="name"/>
+          <input id="name" placeholder="" type="text" ngControl="name"/>
           <label for="name" class="active">Name</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12 m6 l6">
-            <select materialize="material_select" [materializeSelectOptions]="categories" required [(ngModel)]="nut.category">
+            <select materialize="material_select" [materializeSelectOptions]="categories" ngControl="category">
               <option value="" disabled>Choose the category</option>
               <option *ngFor="let category of categories" [value]="category">{{category}}</option>
             </select>
             <label>Category</label>
         </div>
       </div>
-      <div class="row">
+      <div class="row" ngControlGroup="quantity">
         <div class="input-field col s4 m2">
-          <input id="name" [(ngModel)]="nut.quantity.amount" placeholder="" type="text" required class="validate"/>
-          <label for="name" class="active">Amount</label>
+          <input id="amount" ngControl="amount" placeholder="" type="text"/>
+          <label for="amount" class="active">Amount</label>
         </div>
         <div class="input-field col s8 m4">
-            <select materialize="material_select" [materializeSelectOptions]="units" required [(ngModel)]="nut.quantity.unit">
+            <select materialize="material_select" [materializeSelectOptions]="units" ngControl="unit">
               <option value="" disabled>Choose the unit</option>
               <option *ngFor="let unit of units" [value]="unit">{{unit}}</option>
             </select>
@@ -30,7 +30,7 @@
       </div>
       <div class="row">
         <div class="input-field col s12 ">
-          <input id="notes" [(ngModel)]="nut.notes" type="text" placeholder="Type the notes here..." class="validate"/>
+          <input id="notes" ngControl="notes" type="text" placeholder="Type the notes here..." />
           <label for="notes" class="active">Notes</label>
         </div>
       </div>

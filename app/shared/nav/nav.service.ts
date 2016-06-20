@@ -31,10 +31,17 @@ export class NavigationItem {
 	route: any[];
 	handler: () => void;
 
-	constructor(owner: any, icon: string, route: any[], handler?: () => void) {
+	isEnabled: () => boolean;
+
+	constructor(owner: any, icon: string, route: any[], handler?: () => void, isEnabled?: () => boolean) {
 		this.owner = owner;
 		this.icon = icon;
 		this.route = route;
 		this.handler = handler;
+		this.isEnabled = isEnabled;
+
+		if (!this.isEnabled) {
+			this.isEnabled = () => { return true };
+		}
 	}
 }

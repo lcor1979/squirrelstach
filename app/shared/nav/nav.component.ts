@@ -56,4 +56,8 @@ export class Nav implements OnInit {
     execute(item:NavigationItem): void {
         item.handler();
     }
+
+    isDisabled(item:NavigationItem): boolean {
+        return !item.isEnabled();
+    }
 }
