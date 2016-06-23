@@ -141,6 +141,43 @@ export class NutsService {
 		}
 
 	}
+
+	saveNut(nut: Nut, callback?: (nut: Nut, error?: string) => void) {
+		if (this.nutsReference) {
+			var data = {
+				name: nut.name,
+				category: nut.category,
+				quantity: {
+					amount: nut.quantity.amount,
+					unit: nut.quantity.unit
+				},
+				notes: nut.notes
+			};
+
+			if (nut.id) {
+				this.nutsReference.child(nut.id).set(data)
+					.then(() => callback(nut))
+					.catch((error) => callback(nut, error));
+				// TODO Update categories
+			}
+			else {
+				// New nut
+				// Get a key for a new nut.
+				var newNutKey = this.nutsReference.push().key;
+
+				nut.id = newNutKey;
+
+				var updates = {};
+				updates['/' + newNutKey] = data;
+
+				this.nutsReference.update(updates)
+					.then(() => callback(nut))
+					.catch((error) => callback(nut, error));
+				// TODO Update categories
+			}
+		}
+
+	}
 	
 }
 

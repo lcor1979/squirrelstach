@@ -23,6 +23,7 @@ import { EditComponent }   from './edit/index';
 		{ path: '/', name: 'Home', component: ListComponent, useAsDefault: true },
 		{ path: '/add', name: 'Add', component: AddComponent },
 		{ path: '/details/:id', name: 'Details', component: DetailsComponent },
+		{ path: '/create', name: 'Create', component: EditComponent },
 		{ path: '/edit/:id', name: 'Edit', component: EditComponent }
 	]) 
 	export class AppComponent implements OnInit, OnDestroy { 
