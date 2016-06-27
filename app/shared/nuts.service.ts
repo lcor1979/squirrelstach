@@ -3,14 +3,18 @@ import { Injectable, NgZone } from '@angular/core';
 import {SessionStorage} from "angular2-localstorage/WebStorage";
 
 import { Nut } from './model';
-import { AuthService, User, FirebaseDBService }   from './index';
+import { AuthService, User }   from './index';
 
 import * as s from 'underscore.string';
+
+declare var firebase: any;
 
 @Injectable()
 export class NutsService {
 
 	private authSubscription;
+	private userRootReference;
+	private categoriesReference;
 	private nutsReference;
 	private nutsListDescriptor: DataDescriptor;
 
@@ -24,21 +28,30 @@ export class NutsService {
 	private allNuts: Nut[] = [];
 	nuts: Nut[] = [];
 
-	constructor(private authService: AuthService, private dbService: FirebaseDBService,
+	constructor(private authService: AuthService,
 		zone: NgZone) {
 		this.authSubscription = this.authService.addUserLoggedHandler((user) => zone.run(() => this.userChanged(user)));
+	}
+
+	private getReference(path) {
+		return firebase.database().ref(path);
 	}
 
     private userChanged(user: User) {
     	if (!user || (this.currentUserId != user.uid)) {
     		if (user) {
 				this.currentUserId = user.uid;
-				this.nutsReference = this.dbService.getRef('staches/' + this.currentUserId + '/nuts');
+				this.userRootReference = this.getReference('staches/' + this.currentUserId);
+				this.categoriesReference = this.getReference('staches/' + this.currentUserId + '/categories');
+				this.nutsReference = this.getReference('staches/' + this.currentUserId + '/nuts');
 				this.nutsListDescriptor = this.setupDataDescriptorReference(this.nutsListDescriptor, 'value', this.nutsReference);
 				this.nutsListDescriptor.on(this.nutsListDescriptor.dataReference.orderByChild('name'), (data) => this.addNuts(data));
     		}
     		else {
 				this.currentUserId = null;
+				this.userRootReference = null;
+				this.categoriesReference = null;
+				this.nutsReference = null;
 				if (this.nutsListDescriptor) {
 					this.nutsListDescriptor.close();
 					this.allNuts = [];
@@ -143,7 +156,7 @@ export class NutsService {
 	}
 
 	saveNut(nut: Nut, callback?: (nut: Nut, error?: string) => void) {
-		if (this.nutsReference) {
+		if (this.userRootReference && this.nutsReference) {
 			var data = {
 				name: nut.name,
 				category: nut.category,
@@ -154,31 +167,53 @@ export class NutsService {
 				notes: nut.notes
 			};
 
-			if (nut.id) {
-				this.nutsReference.child(nut.id).set(data)
-					.then(() => callback(nut))
-					.catch((error) => callback(nut, error));
-				// TODO Update categories
-			}
-			else {
-				// New nut
-				// Get a key for a new nut.
+			if (!nut.id) {
 				var newNutKey = this.nutsReference.push().key;
-
 				nut.id = newNutKey;
-
-				var updates = {};
-				updates['/' + newNutKey] = data;
-
-				this.nutsReference.update(updates)
-					.then(() => callback(nut))
-					.catch((error) => callback(nut, error));
-				// TODO Update categories
 			}
-		}
 
+			this.userRootReference.transaction(function(userRoot) {
+				if (userRoot) {
+					// Check previous category
+					var previousCategory = null;
+
+					if (userRoot.nuts[nut.id]) {
+						previousCategory = userRoot.nuts[nut.id].category;
+					} 
+
+					// Update data
+					userRoot.nuts[nut.id] = data;
+
+					// Update category
+					if (userRoot.categories[previousCategory]) {
+						userRoot.categories[previousCategory]--;
+						if (userRoot.categories[previousCategory] <= 0) {
+							userRoot.categories.remove(previousCategory);
+						}
+					}
+
+					if (!userRoot.categories[nut.category]) {
+						userRoot.categories[nut.category] = 1;
+					}
+					else {
+						userRoot.categories[nut.category]++;
+					}
+
+					return userRoot;
+				}
+				else {
+					return null;
+				}
+			}, (error, commited, snapshot) => {
+				if (error) {
+					callback(nut, error);
+				}
+				else if (commited) {
+					callback(nut);
+				}
+			}, false);
+		}
 	}
-	
 }
 
 
