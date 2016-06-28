@@ -15,6 +15,7 @@ export class NutsService {
 	private authSubscription;
 	private userRootReference;
 	private categoriesReference;
+	private categoriesDescriptor: DataDescriptor;
 	private nutsReference;
 	private nutsListDescriptor: DataDescriptor;
 
@@ -27,6 +28,8 @@ export class NutsService {
 
 	private allNuts: Nut[] = [];
 	nuts: Nut[] = [];
+
+	categories: String[] = [];
 
 	constructor(private authService: AuthService,
 		zone: NgZone) {
@@ -42,7 +45,11 @@ export class NutsService {
     		if (user) {
 				this.currentUserId = user.uid;
 				this.userRootReference = this.getReference('staches/' + this.currentUserId);
+
 				this.categoriesReference = this.getReference('staches/' + this.currentUserId + '/categories');
+				this.categoriesDescriptor = this.setupDataDescriptorReference(this.categoriesDescriptor, 'value', this.categoriesReference);
+				this.categoriesDescriptor.on(this.categoriesDescriptor.dataReference.orderByKey(), (categories) => this.loadCategories(categories));
+
 				this.nutsReference = this.getReference('staches/' + this.currentUserId + '/nuts');
 				this.nutsListDescriptor = this.setupDataDescriptorReference(this.nutsListDescriptor, 'value', this.nutsReference);
 				this.nutsListDescriptor.on(this.nutsListDescriptor.dataReference.orderByChild('name'), (data) => this.addNuts(data));
@@ -50,7 +57,13 @@ export class NutsService {
     		else {
 				this.currentUserId = null;
 				this.userRootReference = null;
+
 				this.categoriesReference = null;
+				if (this.categoriesDescriptor) {
+					this.categoriesDescriptor.close();
+					this.categories = [];
+				}
+
 				this.nutsReference = null;
 				if (this.nutsListDescriptor) {
 					this.nutsListDescriptor.close();
@@ -86,6 +99,13 @@ export class NutsService {
 			self.allNuts.push(nutValue);
 		});
 		self.nuts = self.filterData(self.allNuts, self.filter);
+	}
+
+	private loadCategories(categories) {
+		this.categories = [];
+		categories.forEach((category) => {
+			this.categories.push(category.key);
+		});
 	}
 
 
@@ -174,32 +194,37 @@ export class NutsService {
 
 			this.userRootReference.transaction(function(userRoot) {
 				if (userRoot) {
-					// Check previous category
-					var previousCategory = null;
+					try {
+						// Check previous category
+						var previousCategory = null;
 
-					if (userRoot.nuts[nut.id]) {
-						previousCategory = userRoot.nuts[nut.id].category;
-					} 
+						if (userRoot.nuts[nut.id]) {
+							previousCategory = userRoot.nuts[nut.id].category;
+						} 
 
-					// Update data
-					userRoot.nuts[nut.id] = data;
+						// Update data
+						userRoot.nuts[nut.id] = data;
 
-					// Update category
-					if (userRoot.categories[previousCategory]) {
-						userRoot.categories[previousCategory]--;
-						if (userRoot.categories[previousCategory] <= 0) {
-							userRoot.categories.remove(previousCategory);
+						// Update category
+						if (userRoot.categories[previousCategory]) {
+							userRoot.categories[previousCategory]--;
+							if (userRoot.categories[previousCategory] <= 0) {
+								delete userRoot.categories[previousCategory];
+							}
 						}
-					}
 
-					if (!userRoot.categories[nut.category]) {
-						userRoot.categories[nut.category] = 1;
-					}
-					else {
-						userRoot.categories[nut.category]++;
-					}
+						if (!userRoot.categories[nut.category]) {
+							userRoot.categories[nut.category] = 1;
+						}
+						else {
+							userRoot.categories[nut.category]++;
+						}
 
-					return userRoot;
+						return userRoot;
+					} catch (error) {
+						console.log("Error during save nut transaction: " + error);
+						return;
+					}
 				}
 				else {
 					return null;

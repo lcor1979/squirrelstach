@@ -100,7 +100,7 @@ export class AuthService {
 			// Set the current user
 			this.setLoggedUser(result.user);
 		}).catch(function(error) {
-			console.log("Error during authentication wuth redirect: " + error);
+			console.log("Error during authentication with redirect: " + error);
 		});
 	}
 }

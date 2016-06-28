@@ -18,14 +18,6 @@ export class EditComponent implements OnInit {
 
 	nutId;
 
-	categories: string[] = [
-		"Apéritif",
-		"Viande",
-		"Légumes",
-		"Accompagnements",
-		"Général"
-	];
-
 	units: string[] = [
 		"Boîte(s)",
 		"Pot(s)",
@@ -66,6 +58,10 @@ export class EditComponent implements OnInit {
 		}
     }
 
+    get categories() : String[] {
+    	return this.nutsService.categories;
+    }
+
 	/* Form has been modified and is valid */
     isDirtyAndValid() {
 		return this.form.dirty && this.form.valid;
@@ -95,6 +91,7 @@ export class EditComponent implements OnInit {
 			this.displayToast('Item saved');
 		}
     } 
+
     delete(): void {
 		alert('delete');
     }
