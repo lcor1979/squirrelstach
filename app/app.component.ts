@@ -4,6 +4,7 @@ import { RouteConfig, ROUTER_DIRECTIVES } from '@angular/router-deprecated';
 import {LocalStorageService} from "angular2-localstorage/LocalStorageEmitter";
 
 import { Nav, NavService, AuthService, NutsService, User }   from './shared/index';
+import { I18nService }   from './i18n/index';
 import { AddComponent }   from './add/index';
 import { ListComponent }   from './list/index'; 
 import { DetailsComponent }   from './details/index'; 
@@ -37,6 +38,7 @@ import { EditComponent }   from './edit/index';
 			private authService: AuthService, 
 			private nutsService: NutsService,
 			private navService: NavService,
+			private i18n: I18nService,
 			zone: NgZone) {
 			this.userIsLogged = false;
 			this.zone = zone;

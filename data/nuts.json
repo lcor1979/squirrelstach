@@ -13,6 +13,9 @@
 				"Viande": 1,
 				"Légumes": 1,
 				"Accompagnements": 1
+			},
+			"settings": {
+				"language": "fr"
 			}
 		}
 	}

@@ -11,10 +11,9 @@ export class AuthService {
 	private provider;
 	@SessionStorage('squirrelstach/auth/sessionId') private googleAccessToken: string;
 
+	// The current user
 	private userLoggedSubject = new Subject<any>();
 	private userLogged$ = this.userLoggedSubject.asObservable();
-
-	// The current user
 	user: User;
 
 	/**

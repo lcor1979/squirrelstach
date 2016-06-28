@@ -4,8 +4,9 @@ import {ROUTER_DIRECTIVES, RouteParams } from '@angular/router-deprecated';
 
 import {MaterializeDirective} from 'angular2-materialize';
 
+import { I18nService }  from '../i18n/index';
 import { Nut } from '../shared/model';
-import { NutsService, NavService, NavigationItem }   from '../shared/index';
+import { NutsService, NavService, NavigationItem } from '../shared/index';
 
 declare var Materialize: any;
 @Component({
@@ -17,15 +18,6 @@ declare var Materialize: any;
 export class EditComponent implements OnInit { 
 
 	nutId;
-
-	units: string[] = [
-		"Boîte(s)",
-		"Pot(s)",
-		"Kg",
-		"Paquet(s)",
-		"Pièce(s)",
-		"Sachet(s)"
-	];
 	
 	private toastDisplayed: boolean;
 
@@ -33,6 +25,7 @@ export class EditComponent implements OnInit {
 
 	constructor(private navService: NavService,
 		private nutsService: NutsService,
+		private i18n: I18nService,
 		routeParams: RouteParams, builder: FormBuilder) {
 		this.nutId = routeParams.get("id");
 
@@ -62,6 +55,10 @@ export class EditComponent implements OnInit {
     	return this.nutsService.categories;
     }
 
+    get units() : String[] {
+    	return this.i18n.units;
+    }
+
 	/* Form has been modified and is valid */
     isDirtyAndValid() {
 		return this.form.dirty && this.form.valid;
@@ -88,7 +85,7 @@ export class EditComponent implements OnInit {
 			this.displayToast('Error saving item');
 		}
 		else {
-			this.displayToast('Item saved');
+			this.displayToast(this.i18n.getMessage('message.item.saved'));
 		}
     } 
 

@@ -11,11 +11,19 @@ declare var firebase: any;
 
 @Injectable()
 export class NutsService {
+	static DEFAULT_SETTINGS = {
+		language: NutsService.DEFAULT_LANGUAGE
+	};
 
 	private authSubscription;
 	private userRootReference;
+
+	private settingsReference;
+	private settingsDescriptor: DataDescriptor;
+
 	private categoriesReference;
 	private categoriesDescriptor: DataDescriptor;
+
 	private nutsReference;
 	private nutsListDescriptor: DataDescriptor;
 
@@ -30,6 +38,8 @@ export class NutsService {
 	nuts: Nut[] = [];
 
 	categories: String[] = [];
+
+	@SessionStorage('squirrelstach/settings') settings = NutsService.DEFAULT_SETTINGS;
 
 	constructor(private authService: AuthService,
 		zone: NgZone) {
@@ -46,6 +56,10 @@ export class NutsService {
 				this.currentUserId = user.uid;
 				this.userRootReference = this.getReference('staches/' + this.currentUserId);
 
+				this.settingsReference = this.getReference('staches/' + this.currentUserId + '/settings');
+				this.settingsDescriptor = this.setupDataDescriptorReference(this.settingsDescriptor, 'value', this.settingsReference);
+				this.settingsDescriptor.on(this.settingsDescriptor.dataReference.orderByKey(), (settings) => this.loadSettings(settings));
+
 				this.categoriesReference = this.getReference('staches/' + this.currentUserId + '/categories');
 				this.categoriesDescriptor = this.setupDataDescriptorReference(this.categoriesDescriptor, 'value', this.categoriesReference);
 				this.categoriesDescriptor.on(this.categoriesDescriptor.dataReference.orderByKey(), (categories) => this.loadCategories(categories));
@@ -53,10 +67,18 @@ export class NutsService {
 				this.nutsReference = this.getReference('staches/' + this.currentUserId + '/nuts');
 				this.nutsListDescriptor = this.setupDataDescriptorReference(this.nutsListDescriptor, 'value', this.nutsReference);
 				this.nutsListDescriptor.on(this.nutsListDescriptor.dataReference.orderByChild('name'), (data) => this.addNuts(data));
+
+
     		}
     		else {
 				this.currentUserId = null;
 				this.userRootReference = null;
+
+				this.settingsReference = null;
+				if (this.settingsDescriptor) {
+					this.settingsDescriptor.close();
+					this.settings = NutsService.DEFAULT_SETTINGS;
+				}
 
 				this.categoriesReference = null;
 				if (this.categoriesDescriptor) {
@@ -108,6 +130,11 @@ export class NutsService {
 		});
 	}
 
+	private loadSettings(settings) {
+		settings.forEach((setting) => {
+			this.settings[setting.key] = setting.val();
+		});
+	}
 
 	private filterData(allNuts: Nut[], filter: SearchFilter): Nut[] {
 		var toFilter = allNuts;
