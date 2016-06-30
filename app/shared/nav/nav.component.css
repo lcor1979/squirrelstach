@@ -9,3 +9,11 @@
         cursor: default;
         opacity: 0.6;
 }
+
+.language-active {
+	background-color: #e0e0e0;
+    opacity: .4;
+	 pointer-events: none;
+        cursor: default;
+        opacity: 0.6;
+}

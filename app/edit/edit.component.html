@@ -3,35 +3,35 @@
       <div class="row">
         <div class="input-field col s12 m6 l6 ">
           <input id="name" placeholder="" type="text" ngControl="name"/>
-          <label for="name" class="active">Name</label>
+          <label for="name" class="active">{{ 'label.nut.name' | i18n }}</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12 m6 l6">
             <select materialize="material_select" [materializeSelectOptions]="categories" ngControl="category">
-              <option value="" disabled>Choose the category</option>
+              <option value="" disabled>{{ 'label.category.placeholder' | i18n }}</option>
               <option *ngFor="let category of categories" [value]="category">{{category}}</option>
             </select>
-            <label>Category</label>
+            <label>{{ 'label.nut.category' | i18n }}</label>
         </div>
       </div>
       <div class="row" ngControlGroup="quantity">
         <div class="input-field col s4 m2">
           <input id="amount" ngControl="amount" placeholder="" type="text"/>
-          <label for="amount" class="active">Amount</label>
+          <label for="amount" class="active">{{ 'label.nut.amount' | i18n }}</label>
         </div>
         <div class="input-field col s8 m4">
             <select materialize="material_select" [materializeSelectOptions]="units" ngControl="unit">
-              <option value="" disabled>Choose the unit</option>
+              <option value="" disabled>{{ 'label.unit.placeholder' | i18n }}</option>
               <option *ngFor="let unit of units" [value]="unit">{{unit}}</option>
             </select>
-            <label>Unit</label>
+            <label>{{ 'label.nut.unit' | i18n }}</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12 ">
-          <input id="notes" ngControl="notes" type="text" placeholder="Type the notes here..." />
-          <label for="notes" class="active">Notes</label>
+          <input id="notes" ngControl="notes" type="text" placeholder="{{ 'label.notes.placeholder' | i18n }}" />
+          <label for="notes" class="active">{{ 'label.nut.notes' | i18n }}</label>
         </div>
       </div>
     </form>

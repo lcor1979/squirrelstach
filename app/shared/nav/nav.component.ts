@@ -1,18 +1,19 @@
-import {Component, ElementRef, Inject, OnInit} from '@angular/core';
-import {ROUTER_DIRECTIVES, Router} from '@angular/router-deprecated';
+import { Component, ElementRef, Inject, OnInit } from '@angular/core';
+import { ROUTER_DIRECTIVES, Router } from '@angular/router-deprecated';
 
+import { MaterializeDirective } from 'angular2-materialize';
+
+import { I18nService, I18nPipe, Language } from '../../i18n/index';
 import { AuthService } from '../index';
 import { NavService, NavigationItem } from './nav.service';
-
-
-declare var jQuery: any;
 
 @Component({
 	moduleId: module.id,
     selector: 'sqs-nav',
-    directives: [ROUTER_DIRECTIVES],
+    directives: [ROUTER_DIRECTIVES, MaterializeDirective],
     templateUrl: 'nav.component.html',
-    styleUrls: ['nav.component.css']
+    styleUrls: ['nav.component.css'],
+    pipes: [I18nPipe]
 })
 export class Nav implements OnInit {
     private navigationItemsChangedSubscription;
@@ -21,26 +22,27 @@ export class Nav implements OnInit {
 
    elementRef: ElementRef;
 
-   constructor(private router: Router, 
+   constructor(
+       private router: Router, 
        private authService: AuthService,
        private navService: NavService,
-   	@Inject(ElementRef) elementRef: ElementRef) {
+       private i18n: I18nService,
+   	   @Inject(ElementRef) elementRef: ElementRef) {
         this.elementRef = elementRef;
     }
 
     ngOnInit() {
         this.navigationItemsChangedSubscription = this.navService.addNavigationItemsChangedHandler((items) => this.navigationChanged(items));
-        jQuery(this.elementRef.nativeElement).find('.dropdown-button').dropdown({
-            belowOrigin: true,
-            constrain_width: false,
-            alignment: 'right'
-        });
     }    
 
     ngOnDestroy() {
         if (this.navigationItemsChangedSubscription) {
             this.navService.removeNavigationItemsChangedHandler(this.navigationItemsChangedSubscription);
         }
+    }
+
+    switchLanguage(code:string) {
+        this.i18n.language = code;
     }
 
     navigationChanged(items:NavigationItem[]):void {

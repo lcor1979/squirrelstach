@@ -1,16 +1,17 @@
 <ul id="accountMenu" class="dropdown-content">
-    <li><a class="red-text text-lighten-1" href="javascript:void(0)" (click)="authService.disconnect()">Disconnect</a></li>
+    <li *ngFor="let language of i18n.languages" [class.language-active]="language.code == i18n.language"><a class="red-text text-lighten-1" href="javascript:void(0)" (click)="switchLanguage(language.code)">{{ language.label }}</a></li>
+    <li><a class="red-text text-lighten-1" href="javascript:void(0)" (click)="authService.disconnect()">{{ 'action.disconnect' | i18n }}</a></li>
 </ul>
 <nav>
     <div class="nav-wrapper">
-        <a [routerLink]="['Home']" class="brand-logo">Squirel Stach</a>
+        <a [routerLink]="['Home']" class="brand-logo">{{ 'app.title' | i18n }}</a>
         <ul class="right ">
             <li *ngFor="let item of items">
                 <a *ngIf="item.route" [routerLink]="item.route"><i class="material-icons">{{item.icon}}</i></a>
                 <a *ngIf="item.handler" (click)="execute(item)" [class.disabled]="isDisabled(item)"><i class="material-icons">{{item.icon}}</i></a>
             </li>
             <li class="valign-wrapper">
-                <a class="valign dropdown-button" href="javascript:void(0)" data-activates="accountMenu">
+                <a class="valign dropdown-button" href="javascript:void(0)" data-activates="accountMenu" materialize="dropdown" [materializeParams]="[{belowOrigin: true, constrain_width: false, alignment: 'right'}]">
                     <img *ngIf="authService.user.photoURL" src="{{authService.user.photoURL}}" class="circle responsive-img avatar" alt="{{authService.user.displayName}}" title="{{authService.user.displayName}}" />
                     <i *ngIf="!authService.user.photoURL" class="large material-icons" title="{{authService.user.displayName}}">account_circle</i>
                 </a>

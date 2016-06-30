@@ -1,10 +1,10 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, ControlGroup, Control } from '@angular/common';
-import {ROUTER_DIRECTIVES, RouteParams } from '@angular/router-deprecated';
+import { ROUTER_DIRECTIVES, RouteParams } from '@angular/router-deprecated';
 
-import {MaterializeDirective} from 'angular2-materialize';
+import { MaterializeDirective } from 'angular2-materialize';
 
-import { I18nService }  from '../i18n/index';
+import { I18nService, I18nPipe }  from '../i18n/index';
 import { Nut } from '../shared/model';
 import { NutsService, NavService, NavigationItem } from '../shared/index';
 
@@ -13,7 +13,8 @@ declare var Materialize: any;
 	moduleId: module.id,
     directives: [ROUTER_DIRECTIVES, MaterializeDirective],
 	templateUrl: 'edit.component.html',
-	styleUrls: ['edit.component.css']
+	styleUrls: ['edit.component.css'],
+	pipes: [I18nPipe]
 })
 export class EditComponent implements OnInit { 
 
@@ -31,7 +32,7 @@ export class EditComponent implements OnInit {
 
 		this.form = builder.group({
             "name": new Control("", Validators.required),
-            "category": new Control("Général", Validators.required),
+            "category": new Control(this.i18n.getMessage('category.general'), Validators.required),
             "quantity": builder.group({
 				"amount": new Control("", Validators.compose([Validators.required, Validators.pattern("[0-9]{1,3}")])),
 				"unit": new Control("", Validators.required)
@@ -82,7 +83,7 @@ export class EditComponent implements OnInit {
     protected nutSaved(nut: Nut, error: string) {
 		if (error) {
 			console.log('Error during item update: ' + error);
-			this.displayToast('Error saving item');
+			this.displayToast(this.i18n.getMessage('message.item.save.error'));
 		}
 		else {
 			this.displayToast(this.i18n.getMessage('message.item.saved'));
