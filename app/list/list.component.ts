@@ -3,6 +3,7 @@ import {ROUTER_DIRECTIVES} from '@angular/router-deprecated';
 
 import {SessionStorage} from "angular2-localstorage/WebStorage";
 
+import { I18nService, I18nPipe } from '../i18n/index';
 import { Nut } from '../shared/model';
 import { NutsService, SearchFilter, NavService, NavigationItem }   from '../shared/index';
 
@@ -12,14 +13,16 @@ import * as s from 'underscore.string';
 	moduleId: module.id,
     directives: [ROUTER_DIRECTIVES],
 	templateUrl: 'list.component.html',
-	styleUrls: ['list.component.css']
+	styleUrls: ['list.component.css'],
+	pipes: [I18nPipe]
 })
 export class ListComponent implements OnInit, OnDestroy { 
 
 	selectedNut:Nut;
 
 	constructor(private nutsService: NutsService,
-				private navService: NavService) {		
+				private navService: NavService,
+				private i18n: I18nService) {		
     }
 
 	removeCategory() {

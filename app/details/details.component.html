@@ -10,7 +10,7 @@
             </div>
             <div class="card-action center">
                 <span class="left"><i (click)="decrementQuantity()" class="material-icons small red lighten-1 circle small-button">remove</i></span>
-                <input class="quantity-field" type="text" [(ngModel)]="quantity" maxlength="3" /> <span>{{nut.quantity.unit}}</span>
+                <input class="quantity-field" type="text" [(ngModel)]="quantity" maxlength="3" /> <span>{{ i18n.getUnitLabel(nut.quantity.unit) }}</span>
                 <span class="right"><i (click)="incrementQuantity()" class="material-icons small red lighten-1 circle small-button">add</i></span>
             </div>
         </div>

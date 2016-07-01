@@ -2,11 +2,11 @@
 	"staches": {
 		"2F6nQv2ecXQzyjpiEGMQNFDKsgc2": {
 			"nuts": {
-				"1": {"name": "Gougères", "notes": "5 min. à 180°", "quantity": { "amount": 3, "unit": "paquet(s)" }, "category": "Apéritif" },
-  				"2": {"name": "Mini hotdogs", "notes": "", "quantity": { "amount": 1, "unit": "paquet(s)" }, "category": "Apéritif" },
-  				"3": {"name": "Steaks hachés", "notes": "", "quantity": { "amount": 8, "unit": "pièce(s)" }, "category": "Viande" },
-  				"4": {"name": "Haricots verts", "notes": "", "quantity": { "amount": 1, "unit": "Kg" }, "category": "Légumes" },
-  				"5": {"name": "Purée de pommes de terre", "notes": "", "quantity": { "amount": 1, "unit": "Kg" }, "category": "Accompagnements" }
+				"1": {"name": "Gougères", "notes": "5 min. à 180°", "quantity": { "amount": 3, "unit": "pack" }, "category": "Apéritif" },
+  				"2": {"name": "Mini hotdogs", "notes": "", "quantity": { "amount": 1, "unit": "pack" }, "category": "Apéritif" },
+  				"3": {"name": "Steaks hachés", "notes": "", "quantity": { "amount": 8, "unit": "piece" }, "category": "Viande" },
+  				"4": {"name": "Haricots verts", "notes": "", "quantity": { "amount": 1, "unit": "kg" }, "category": "Légumes" },
+  				"5": {"name": "Purée de pommes de terre", "notes": "", "quantity": { "amount": 1, "unit": "kg" }, "category": "Accompagnements" }
 			},
 			"categories": {
 				"Apéritif": 2,

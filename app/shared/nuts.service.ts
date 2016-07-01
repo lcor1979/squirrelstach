@@ -11,7 +11,7 @@ declare var firebase: any;
 
 @Injectable()
 export class NutsService {
-	static DEFAULT_SETTINGS = {
+	static DEFAULT_SETTINGS:Settings = {
 		language: NutsService.DEFAULT_LANGUAGE
 	};
 
@@ -39,7 +39,7 @@ export class NutsService {
 
 	categories: String[] = [];
 
-	@SessionStorage('squirrelstach/settings') settings = NutsService.DEFAULT_SETTINGS;
+	@SessionStorage('squirrelstach/settings') settings:Settings = NutsService.DEFAULT_SETTINGS;
 
 	constructor(private authService: AuthService,
 		zone: NgZone) {
@@ -196,10 +196,18 @@ export class NutsService {
 	updateNutQuantity(id, quantity: number, callback?: (newQuantity: number, error?: string) => void) {
 		if (this.nutsReference) {
 			this.nutsReference.child(id + "/quantity/amount").set(quantity)
-				.then(() =>	callback(quantity))
-				.catch((error) => callback(quantity, error));
+				.then(() =>	{ if (callback) { callback(quantity) }})
+				.catch((error) => { if (callback) { callback(quantity, error) }});
 		}
 
+	}
+
+	updateSettings(callback?: (updatedSettings: Settings, error?: string) => void) {
+		if (this.settingsReference) {
+			this.settingsReference.set(this.settings)
+				.then(() => { if (callback) { callback(this.settings) }})
+				.catch((error) => { if (callback) { callback(this.settings, error) }});
+		}
 	}
 
 	saveNut(nut: Nut, callback?: (nut: Nut, error?: string) => void) {
@@ -258,10 +266,14 @@ export class NutsService {
 				}
 			}, (error, commited, snapshot) => {
 				if (error) {
-					callback(nut, error);
+					if (callback) {
+						callback(nut, error);
+					}
 				}
 				else if (commited) {
-					callback(nut);
+					if (callback) {
+						callback(nut);
+					}
 				}
 			}, false);
 		}
@@ -272,6 +284,10 @@ export class NutsService {
 export interface SearchFilter {
 	searchValue: string;
 	category: string;
+}
+
+export interface Settings {
+	language: string;
 }
 
 class DataDescriptor {

@@ -3,10 +3,9 @@ import {ROUTER_DIRECTIVES, RouteParams } from '@angular/router-deprecated';
 
 import {SessionStorage} from "angular2-localstorage/WebStorage";
 
+import { I18nService } from '../i18n/index';
 import { Nut } from '../shared/model';
-import { NutsService, NavService, NavigationItem }   from '../shared/index';
-
-declare var Materialize: any;
+import { NutsService, NavService, NavigationItem, UIService }   from '../shared/index';
 
 @Component({
 	moduleId: module.id,
@@ -19,10 +18,10 @@ export class DetailsComponent implements OnInit {
 	nutId;
 	nut: Nut;
 
-	private toastDisplayed: boolean;
-
 	constructor(private navService: NavService,
 		private nutsService: NutsService,
+		private i18n: I18nService,
+		private uiService: UIService,
 		routeParams: RouteParams) {
 		this.nut = new Nut();
 		this.nutId = routeParams.get("id");
@@ -35,10 +34,6 @@ export class DetailsComponent implements OnInit {
 			new NavigationItem(this, 'delete', null, this.delete)
 		]);
 		this.nutsService.getNutById(this.nutId, (nut) => this.nutLoaded(nut));
-    }
-
-    edit(): void {
-		alert('edit');
     }
 
     delete(): void {
@@ -71,18 +66,11 @@ export class DetailsComponent implements OnInit {
     protected quantitySaved(quantity:number, error:string) {
     	if (error) {
 			console.log('Error during quantity update: ' + error);
-			this.displayToast('Error during quantity update');
+			this.uiService.displayToast(this.i18n.getMessage('message.quantity.update.error'));
     	}
     	else {
-			this.displayToast('Quantity updated');
+			this.uiService.displayToast(this.i18n.getMessage('message.quantity.updated'));
     	}
-    }
-
-    protected displayToast(text) {
-		if (!this.toastDisplayed) {
-			this.toastDisplayed = true;
-			Materialize.toast(text, 1000, 'rounded', () => { this.toastDisplayed = false });
-		}
     }
 
     private nutLoaded(nut: Nut) {

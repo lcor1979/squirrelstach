@@ -3,7 +3,7 @@ import { ROUTER_DIRECTIVES, Router } from '@angular/router-deprecated';
 
 import { MaterializeDirective } from 'angular2-materialize';
 
-import { I18nService, I18nPipe, Language } from '../../i18n/index';
+import { I18nService, I18nPipe, Translation } from '../../i18n/index';
 import { AuthService } from '../index';
 import { NavService, NavigationItem } from './nav.service';
 
@@ -42,7 +42,7 @@ export class Nav implements OnInit {
     }
 
     switchLanguage(code:string) {
-        this.i18n.language = code;
+        this.i18n.switchLanguage(code);
     }
 
     navigationChanged(items:NavigationItem[]):void {

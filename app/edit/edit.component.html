@@ -23,7 +23,7 @@
         <div class="input-field col s8 m4">
             <select materialize="material_select" [materializeSelectOptions]="units" ngControl="unit">
               <option value="" disabled>{{ 'label.unit.placeholder' | i18n }}</option>
-              <option *ngFor="let unit of units" [value]="unit">{{unit}}</option>
+              <option *ngFor="let unit of units" [value]="unit.code">{{unit.label}}</option>
             </select>
             <label>{{ 'label.nut.unit' | i18n }}</label>
         </div>

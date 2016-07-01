@@ -4,11 +4,10 @@ import { ROUTER_DIRECTIVES, RouteParams } from '@angular/router-deprecated';
 
 import { MaterializeDirective } from 'angular2-materialize';
 
-import { I18nService, I18nPipe }  from '../i18n/index';
+import { I18nService, I18nPipe, Translation }  from '../i18n/index';
 import { Nut } from '../shared/model';
-import { NutsService, NavService, NavigationItem } from '../shared/index';
+import { NutsService, NavService, NavigationItem, UIService } from '../shared/index';
 
-declare var Materialize: any;
 @Component({
 	moduleId: module.id,
     directives: [ROUTER_DIRECTIVES, MaterializeDirective],
@@ -19,14 +18,12 @@ declare var Materialize: any;
 export class EditComponent implements OnInit { 
 
 	nutId;
-	
-	private toastDisplayed: boolean;
-
 	form: ControlGroup;
 
 	constructor(private navService: NavService,
 		private nutsService: NutsService,
 		private i18n: I18nService,
+		private uiService: UIService,
 		routeParams: RouteParams, builder: FormBuilder) {
 		this.nutId = routeParams.get("id");
 
@@ -56,7 +53,7 @@ export class EditComponent implements OnInit {
     	return this.nutsService.categories;
     }
 
-    get units() : String[] {
+    get units() : Translation[] {
     	return this.i18n.units;
     }
 
@@ -83,22 +80,15 @@ export class EditComponent implements OnInit {
     protected nutSaved(nut: Nut, error: string) {
 		if (error) {
 			console.log('Error during item update: ' + error);
-			this.displayToast(this.i18n.getMessage('message.item.save.error'));
+			this.uiService.displayToast(this.i18n.getMessage('message.item.save.error'));
 		}
 		else {
-			this.displayToast(this.i18n.getMessage('message.item.saved'));
+			this.uiService.displayToast(this.i18n.getMessage('message.item.saved'));
 		}
     } 
 
     delete(): void {
 		alert('delete');
-    }
-
-    protected displayToast(text) {
-		if (!this.toastDisplayed) {
-			this.toastDisplayed = true;
-			Materialize.toast(text, 1000, 'rounded', () => { this.toastDisplayed = false });
-		}
     }
 
     private nutLoaded(nut: Nut) {

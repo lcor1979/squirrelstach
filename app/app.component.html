@@ -2,7 +2,7 @@
     <sqs-nav *ngIf="userIsLogged"></sqs-nav>
     <nav *ngIf="!userIsLogged">
         <div class="nav-wrapper">
-            <a class="brand-logo">Squirel Stach</a>
+            <a class="brand-logo">{{ 'app.title' | i18n }}</a>
         </div>
     </nav>
 </header>

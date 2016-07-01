@@ -1,15 +1,15 @@
-<h1 class="center">Search my nuts</h1>
+<h1 class="center">{{ 'page.list.title' | i18n }}</h1>
 <nav>
     <form style="margin-top: 10px; margin-bottom: 10px">
         <div class="input-field">
-                <input id="search" #search type="search" [ngModel]="filter.searchValue" (keyup)="searchValueChanged(search.value)" required>
+                <input id="search" #search type="search" [ngModel]="filter.searchValue" (keyup)="searchValueChanged(search.value)">
             <label for="search"><i class="material-icons">search</i></label>
             <i class="material-icons">close</i>
         </div>
     </form>
 </nav>
-<div class="search-category-field">Current category:
-    <div *ngIf="!hasCategory()" class="chip search-category">All
+<div class="search-category-field">{{ 'label.category.filter' | i18n }}:
+    <div *ngIf="!hasCategory()" class="chip search-category">{{ 'label.category.all' | i18n }}
     </div>
     <div *ngIf="hasCategory()" class="chip search-category">{{filter.category}}<i class="material-icons circle" (click)="removeCategory()">close</i>
     </div>
@@ -19,7 +19,7 @@
     <a (click)="onSelect(nut)" [routerLink]="['Details', {id:nut.id}]" name="#{{nut.id}}" class="nut-item">
         <i class="material-icons red lighten-1 circle">shopping_basket</i>
         <span class="title truncate">{{nut.name}}</span>
-        <p>{{nut.quantity.amount}} {{nut.quantity.unit}}</p>
+        <p>{{nut.quantity.amount}} {{ i18n.getUnitLabel(nut.quantity.unit) }}</p>
         <p class="notes truncate">{{nut.notes}}</p></a>
         
         <div class="secondary-content">
