@@ -2,9 +2,20 @@
   "rules": {
     "stashes": {
       "$uid": {
-        // User can read or write if the stash belongs to him or is in share list
-        ".read": "$uid === auth.uid || data.child('share/' + auth.uid).val() === true",
-        ".write": "$uid === auth.uid || data.child('share/' + auth.uid).val() === true"
+        "nuts": {
+          // User can read or write if the stash belongs to him or is in share list
+          ".read": "$uid === auth.uid || data.parent().child('share/' + auth.uid).val() === true",
+          ".write": "$uid === auth.uid || data.parent().child('share/' + auth.uid).val() === true"
+        },
+        "categories": {
+          // User can read or write if the stash belongs to him or is in share list
+          ".read": "$uid === auth.uid || data.parent().child('share/' + auth.uid).val() === true",
+          ".write": "$uid === auth.uid || data.parent().child('share/' + auth.uid).val() === true"
+        },
+        "$other": {
+          ".read": "$uid === auth.uid",
+          ".write": "$uid === auth.uid"
+        }
       }
     }
   }
