@@ -12,7 +12,13 @@ declare var firebase: any;
 @Injectable()
 export class NutsService {
 	static DEFAULT_SETTINGS:Settings = {
-		language: NutsService.DEFAULT_LANGUAGE
+		language: 'en'
+	};
+
+	static DEFAULT_STASH = {
+		categories: {},
+		nuts: {},
+		settings: NutsService.DEFAULT_SETTINGS
 	};
 
 	private authSubscription;
@@ -55,6 +61,13 @@ export class NutsService {
     		if (user) {
 				this.currentUserId = user.uid;
 				this.userRootReference = this.getReference('stashes/' + this.currentUserId);
+
+				// Initialize user root if not existing
+				this.userRootReference.once("value", (userRoot) {
+  					if (!userRoot.exists()) {
+						userRoot.ref.set(NutsService.DEFAULT_STASH);
+  					}
+				});
 
 				this.settingsReference = this.getReference('stashes/' + this.currentUserId + '/settings');
 				this.settingsDescriptor = this.setupDataDescriptorReference(this.settingsDescriptor, 'value', this.settingsReference);
@@ -113,14 +126,13 @@ export class NutsService {
 
 
 	private addNuts(data) {
-		var self = this;
-		self.allNuts = [];
-		data.forEach(function(nut) {
+		this.allNuts = [];
+		data.forEach((nut) => {
 			var nutValue: Nut = nut.val();
 			nutValue.id = nut.getKey();
-			self.allNuts.push(nutValue);
+			this.allNuts.push(nutValue);
 		});
-		self.nuts = self.filterData(self.allNuts, self.filter);
+		this.nuts = this.filterData(this.allNuts, this.filter);
 	}
 
 	private loadCategories(categories) {
@@ -230,6 +242,15 @@ export class NutsService {
 			this.userRootReference.transaction(function(userRoot) {
 				if (userRoot) {
 					try {
+						// Initialize nuts
+						if (!userRoot.nuts) {
+							userRoot.nuts = {};
+						}
+						// Initialize categories
+						if (!userRoot.categories) {
+							userRoot.categories = {};
+						}
+
 						// Check previous category
 						var previousCategory = null;
 

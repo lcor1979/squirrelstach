@@ -2,11 +2,11 @@
 	"stashes": {
 		"2F6nQv2ecXQzyjpiEGMQNFDKsgc2": {
 			"nuts": {
-				"1": {"name": "Gougères", "notes": "5 min. à 180°", "quantity": { "amount": 3, "unit": "pack" }, "category": "Apéritif" },
-  				"2": {"name": "Mini hotdogs", "notes": "", "quantity": { "amount": 1, "unit": "pack" }, "category": "Apéritif" },
-  				"3": {"name": "Steaks hachés", "notes": "", "quantity": { "amount": 8, "unit": "piece" }, "category": "Viande" },
-  				"4": {"name": "Haricots verts", "notes": "", "quantity": { "amount": 1, "unit": "kg" }, "category": "Légumes" },
-  				"5": {"name": "Purée de pommes de terre", "notes": "", "quantity": { "amount": 1, "unit": "kg" }, "category": "Accompagnements" }
+				"n1": {"name": "Gougères", "notes": "5 min. à 180°", "quantity": { "amount": 3, "unit": "pack" }, "category": "Apéritif" },
+  				"n2": {"name": "Mini hotdogs", "notes": "", "quantity": { "amount": 1, "unit": "pack" }, "category": "Apéritif" },
+  				"n3": {"name": "Steaks hachés", "notes": "", "quantity": { "amount": 8, "unit": "piece" }, "category": "Viande" },
+  				"n4": {"name": "Haricots verts", "notes": "", "quantity": { "amount": 1, "unit": "kg" }, "category": "Légumes" },
+  				"n5": {"name": "Purée de pommes de terre", "notes": "", "quantity": { "amount": 1, "unit": "kg" }, "category": "Accompagnements" }
 			},
 			"categories": {
 				"Apéritif": 2,
@@ -15,8 +15,37 @@
 				"Accompagnements": 1
 			},
 			"settings": {
-				"language": "fr"
-			}
+				"language": "fr",
+        "stashes": {          
+        }
+			},
+      "share": {
+        "ydtEr7jvK2bW0a4HmvrzKOSV3qu1": true
+      }
 		}
-	}
+	},
+  "ydtEr7jvK2bW0a4HmvrzKOSV3qu1" : {
+      "categories" : {
+        "Général" : 1
+      },
+      "nuts" : {
+        "-KLpkYh_SBr4WEoalsRI" : {
+          "category" : "Général",
+          "name" : "Test",
+          "notes" : "",
+          "quantity" : {
+            "amount" : "1",
+            "unit" : "box"
+          }
+        }
+      },
+      "settings" : {
+        "language" : "fr",
+        "stashes": {
+          "Laurent Cornélis": "2F6nQv2ecXQzyjpiEGMQNFDKsgc2"
+        }
+      },
+      "share": {        
+      }
+    }
 }
