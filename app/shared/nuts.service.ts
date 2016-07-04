@@ -27,7 +27,7 @@ export class NutsService {
 	private nutsReference;
 	private nutsListDescriptor: DataDescriptor;
 
-	@SessionStorage('squirrelstach/nuts/searchFilter') filter: SearchFilter = {
+	@SessionStorage('squirrelstash/nuts/searchFilter') filter: SearchFilter = {
 		searchValue: "",
 		category: null
 	};
@@ -39,7 +39,7 @@ export class NutsService {
 
 	categories: String[] = [];
 
-	@SessionStorage('squirrelstach/settings') settings:Settings = NutsService.DEFAULT_SETTINGS;
+	@SessionStorage('squirrelstash/settings') settings:Settings = NutsService.DEFAULT_SETTINGS;
 
 	constructor(private authService: AuthService,
 		zone: NgZone) {
@@ -54,17 +54,17 @@ export class NutsService {
     	if (!user || (this.currentUserId != user.uid)) {
     		if (user) {
 				this.currentUserId = user.uid;
-				this.userRootReference = this.getReference('staches/' + this.currentUserId);
+				this.userRootReference = this.getReference('stashes/' + this.currentUserId);
 
-				this.settingsReference = this.getReference('staches/' + this.currentUserId + '/settings');
+				this.settingsReference = this.getReference('stashes/' + this.currentUserId + '/settings');
 				this.settingsDescriptor = this.setupDataDescriptorReference(this.settingsDescriptor, 'value', this.settingsReference);
 				this.settingsDescriptor.on(this.settingsDescriptor.dataReference.orderByKey(), (settings) => this.loadSettings(settings));
 
-				this.categoriesReference = this.getReference('staches/' + this.currentUserId + '/categories');
+				this.categoriesReference = this.getReference('stashes/' + this.currentUserId + '/categories');
 				this.categoriesDescriptor = this.setupDataDescriptorReference(this.categoriesDescriptor, 'value', this.categoriesReference);
 				this.categoriesDescriptor.on(this.categoriesDescriptor.dataReference.orderByKey(), (categories) => this.loadCategories(categories));
 
-				this.nutsReference = this.getReference('staches/' + this.currentUserId + '/nuts');
+				this.nutsReference = this.getReference('stashes/' + this.currentUserId + '/nuts');
 				this.nutsListDescriptor = this.setupDataDescriptorReference(this.nutsListDescriptor, 'value', this.nutsReference);
 				this.nutsListDescriptor.on(this.nutsListDescriptor.dataReference.orderByChild('name'), (data) => this.addNuts(data));
 
