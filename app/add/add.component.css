@@ -1,0 +1,21 @@
+.title {
+	font-weight: bold;
+	color: #ef5350;
+}
+
+.notes {
+	font-size: 10px;
+}
+
+a.collection-item {
+	color: #000000;
+}
+
+.collection-item.active {
+    background-color: #ffebee;
+    color: #000000
+}
+
+.nut-item {
+	color: #000000;
+}

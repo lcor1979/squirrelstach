@@ -89,6 +89,7 @@ export class I18nService {
 var MESSAGES = {
 	'fr': {
 		'app.title': 'Squirrel Stash',
+		'page.add.title': 'Modifier un élément dans ma réserve',
 		'page.list.title': 'Contenu de ma réserve',
 		'action.disconnect': 'Déconnexion',
 		'category.general': 'Général',
@@ -110,6 +111,7 @@ var MESSAGES = {
 	},
 	'en': {
 		'app.title': 'Squirrel Stash',
+		'page.add.title': 'Add an item in my stash',
 		'page.list.title': 'My stash\'s content',
 		'action.disconnect': 'Disconnect',
 		'category.general': 'General',

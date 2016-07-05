@@ -40,7 +40,7 @@ export class NutsService {
 
 	currentUserId: string;
 
-	private allNuts: Nut[] = [];
+	allNuts: Nut[] = [];
 	nuts: Nut[] = [];
 
 	categories: String[] = [];
@@ -148,7 +148,7 @@ export class NutsService {
 		});
 	}
 
-	private filterData(allNuts: Nut[], filter: SearchFilter): Nut[] {
+	public filterData(allNuts: Nut[], filter: SearchFilter, allIfNoFilter: boolean = true): Nut[] {
 		var toFilter = allNuts;
 		if (!toFilter) {
 			toFilter = [];
@@ -160,6 +160,9 @@ export class NutsService {
 		var regexp: RegExp = undefined;
 		if (filter.searchValue) {
 			regexp = new RegExp(filter.searchValue, 'i');
+		}
+		else if (!allIfNoFilter) {
+			return [];
 		}
 
 		return toFilter.filter(function(nut: Nut) {
