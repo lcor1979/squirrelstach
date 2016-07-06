@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, ControlGroup, Control } from '@angular/common';
-import { ROUTER_DIRECTIVES, RouteParams } from '@angular/router-deprecated';
+import { ROUTER_DIRECTIVES, Router, RouteParams } from '@angular/router-deprecated';
 
 import { MaterializeDirective } from 'angular2-materialize';
 
@@ -24,8 +24,25 @@ export class EditComponent implements OnInit {
 		private nutsService: NutsService,
 		private i18n: I18nService,
 		private uiService: UIService,
-		routeParams: RouteParams, builder: FormBuilder) {
-		this.nutId = routeParams.get("id");
+		private router: Router,
+		routeParams: RouteParams, 
+		builder: FormBuilder) {
+
+		this.form = builder.group({
+           	"name": new Control("", Validators.required),
+           	"category": new Control("", Validators.required),
+           	"quantity": builder.group({
+				"amount": new Control("", Validators.compose([Validators.required, Validators.pattern("[0-9]{1,3}")])),
+				"unit": new Control("", Validators.required)
+			}),            
+           	"notes": new Control("")
+        });
+
+		this.initializeForm(routeParams.get("id"), routeParams.get("label"));
+    }
+
+    private initializeForm(nutId: string, defaultLabel?: string) {
+		this.nutId = nutId;
 
 		var label:string = "";
 		var category:string = "";
@@ -33,21 +50,30 @@ export class EditComponent implements OnInit {
 
 		// Default values for new element
 		if (!this.nutId) {
-			label = routeParams.get("label");
+			label = defaultLabel ? defaultLabel : "";
 			category = this.i18n.getMessage('category.general');
 			amount = 1;
 		}
 
+		this.setFormValues(
+			{ 
+				name: label, 
+				category: category, 
+				quantity: { 
+					amount: amount, 
+					unit: ""}, 
+				notes: ""
+			}
+		);
+    }
 
-		this.form = builder.group({
-            "name": new Control(label, Validators.required),
-            "category": new Control(category, Validators.required),
-            "quantity": builder.group({
-				"amount": new Control(amount, Validators.compose([Validators.required, Validators.pattern("[0-9]{1,3}")])),
-				"unit": new Control("", Validators.required)
-			}),            
-            "notes": new Control("")
-        });
+    private setFormValues(nut: Nut) {
+    	(<Control>this.form.controls['name']).updateValue(nut.name);
+		(<Control>this.form.controls['category']).updateValue(nut.category);
+		(<Control>(<ControlGroup>this.form.controls['quantity']).controls['amount']).updateValue(nut.quantity.amount);
+		(<Control>(<ControlGroup>this.form.controls['quantity']).controls['unit']).updateValue(nut.quantity.unit);
+		(<Control>this.form.controls['notes']).updateValue(nut.notes);    		
+
     }
 
     ngOnInit() {
@@ -105,20 +131,36 @@ export class EditComponent implements OnInit {
 			this.uiService.displayToast(this.i18n.getMessage('message.item.save.error'));
 		}
 		else {
+			if (!this.nutId) {
+				this.nutId = nut.id;				
+			}
 			this.uiService.displayToast(this.i18n.getMessage('message.item.saved'));
 		}
     } 
 
     delete(): void {
-		alert('delete');
+		this.nutsService.deleteNut(this.nutId, (nutId: string, error: string) => this.nutDeleted(nutId, error));
     }
 
+    protected nutDeleted(nut: Nut, error: string) {
+		if (error) {
+			console.log('Error during item delete: ' + error);
+			this.uiService.displayToast(this.i18n.getMessage('message.item.delete.error'));
+		}
+		else {
+			this.router.navigate(['Home']);
+		}
+    } 
+
     private nutLoaded(nut: Nut) {
-		(<Control>this.form.controls['name']).updateValue(nut.name);
-		(<Control>this.form.controls['category']).updateValue(nut.category);
-		(<Control>(<ControlGroup>this.form.controls['quantity']).controls['amount']).updateValue(nut.quantity.amount);
-		(<Control>(<ControlGroup>this.form.controls['quantity']).controls['unit']).updateValue(nut.quantity.unit);
-		(<Control>this.form.controls['notes']).updateValue(nut.notes);
+    	if (nut) {
+			this.setFormValues(nut); 		
+    	}
+    	else {
+			console.log('Cannot find nut with id: ' + this.nutId);
+			this.uiService.displayToast(this.i18n.getMessage('message.item.load.error'));  
+			this.initializeForm(null); 		
+    	}
     }
 
 }

@@ -40,7 +40,8 @@ export class NutsService {
 
 	currentUserId: string;
 
-	allNuts: Nut[] = [];
+	private allNuts: Nut[] = [];
+	private activeNuts: Nut[] = [];
 	nuts: Nut[] = [];
 
 	categories: String[] = [];
@@ -73,11 +74,11 @@ export class NutsService {
 				this.settingsDescriptor = this.setupDataDescriptorReference(this.settingsDescriptor, 'value', this.settingsReference);
 				this.settingsDescriptor.on(this.settingsDescriptor.dataReference.orderByKey(), (settings) => this.loadSettings(settings));
 
-				this.categoriesReference = this.getReference('stashes/' + this.currentUserId + '/categories');
+				this.categoriesReference = this.getReference('stashes/' + this.currentUserId + '/data/categories');
 				this.categoriesDescriptor = this.setupDataDescriptorReference(this.categoriesDescriptor, 'value', this.categoriesReference);
 				this.categoriesDescriptor.on(this.categoriesDescriptor.dataReference.orderByKey(), (categories) => this.loadCategories(categories));
 
-				this.nutsReference = this.getReference('stashes/' + this.currentUserId + '/nuts');
+				this.nutsReference = this.getReference('stashes/' + this.currentUserId + '/data/nuts');
 				this.nutsListDescriptor = this.setupDataDescriptorReference(this.nutsListDescriptor, 'value', this.nutsReference);
 				this.nutsListDescriptor.on(this.nutsListDescriptor.dataReference.orderByChild('name'), (data) => this.addNuts(data));
 
@@ -103,6 +104,7 @@ export class NutsService {
 				if (this.nutsListDescriptor) {
 					this.nutsListDescriptor.close();
 					this.allNuts = [];
+					this.activeNuts = [];
 					this.nuts = [];
 				}
     		}
@@ -127,12 +129,18 @@ export class NutsService {
 
 	private addNuts(data) {
 		this.allNuts = [];
+		this.activeNuts = [];
 		data.forEach((nut) => {
 			var nutValue: Nut = nut.val();
 			nutValue.id = nut.getKey();
 			this.allNuts.push(nutValue);
+
+			// If quantity is greate than 0, add to active nuts
+			if (nutValue.quantity.amount > 0) {
+				this.activeNuts.push(nutValue);
+			}
 		});
-		this.nuts = this.filterData(this.allNuts, this.filter);
+		this.nuts = this.filterData(this.activeNuts, this.filter);
 	}
 
 	private loadCategories(categories) {
@@ -148,7 +156,7 @@ export class NutsService {
 		});
 	}
 
-	public filterData(allNuts: Nut[], filter: SearchFilter, allIfNoFilter: boolean = true): Nut[] {
+	private filterData(allNuts: Nut[], filter: SearchFilter, allIfNoFilter: boolean = true): Nut[] {
 		var toFilter = allNuts;
 		if (!toFilter) {
 			toFilter = [];
@@ -179,14 +187,18 @@ export class NutsService {
 		}
 	}
 
+	getNutsMatchingLabel(label:String) {
+		return this.filterData(this.allNuts, { searchValue: label }, false);
+	}
+
 	removeCategory() {
 		this.filter.category = null;
-		this.nuts = this.filterData(this.allNuts, this.filter);
+		this.nuts = this.filterData(this.activeNuts, this.filter);
 	}
 
 	setCategory(category: string) {
 		this.filter.category = category;
-		this.nuts = this.filterData(this.allNuts, this.filter);
+		this.nuts = this.filterData(this.activeNuts, this.filter);
 	}
 
 	hasCategory(): boolean {
@@ -195,14 +207,17 @@ export class NutsService {
 
 	searchValueChanged(newValue: string) {
 		this.filter.searchValue = s.trim(newValue);
-		this.nuts = this.filterData(this.allNuts, this.filter);
+		this.nuts = this.filterData(this.activeNuts, this.filter);
 	}
 
 	getNutById(id, callback: (nut:Nut) => void) {
 		if (this.nutsReference) {
 			this.nutsReference.child(id).once('value', data => {
 				var nutValue: Nut = data.val();
-				nutValue.id = data.getKey();
+
+				if (nutValue) {
+					nutValue.id = data.getKey();
+				}
 				callback(nutValue);
 			});
 		}
@@ -225,6 +240,63 @@ export class NutsService {
 		}
 	}
 
+	deleteNut(nutId, callback?: (nutId: string, error?: string) => void) {
+		if (this.userRootReference && this.nutsReference) {
+
+			this.userRootReference.child("data").transaction(function(userData) {
+				if (userData) {
+					try {
+						var previousCategory: string = null;
+
+						// Remove nut
+						if (userData.nuts) {
+							var nut:Nut = userData.nuts[nutId];
+
+							if (nut) {
+								previousCategory = nut.category;
+								delete userData.nuts[nutId];								
+							}
+						}
+
+						// Initialize categories
+						if (!userData.categories) {
+							userData.categories = {};
+						}
+
+						// Update category
+						if (previousCategory) {
+							if (userData.categories[previousCategory]) {
+								userData.categories[previousCategory]--;
+								if (userData.categories[previousCategory] <= 0) {
+									delete userData.categories[previousCategory];
+								}
+							}							
+						}
+
+						return userData;
+					} catch (error) {
+						console.log("Error during delete nut transaction: " + error);
+						return;
+					}
+				}
+				else {
+					return null;
+				}
+			}, (error, commited, snapshot) => {
+				if (error) {
+					if (callback) {
+						callback(nutId, error);
+					}
+				}
+				else if (commited) {
+					if (callback) {
+						callback(nutId);
+					}
+				}
+			}, false);
+		}
+	}
+
 	saveNut(nut: Nut, callback?: (nut: Nut, error?: string) => void) {
 		if (this.userRootReference && this.nutsReference) {
 			var data = {
@@ -242,44 +314,46 @@ export class NutsService {
 				nut.id = newNutKey;
 			}
 
-			this.userRootReference.transaction(function(userRoot) {
-				if (userRoot) {
+			this.userRootReference.child("data").transaction(function(userData) {
+				if (userData) {
 					try {
 						// Initialize nuts
-						if (!userRoot.nuts) {
-							userRoot.nuts = {};
+						if (!userData.nuts) {
+							userData.nuts = {};
 						}
 						// Initialize categories
-						if (!userRoot.categories) {
-							userRoot.categories = {};
+						if (!userData.categories) {
+							userData.categories = {};
 						}
 
 						// Check previous category
-						var previousCategory = null;
+						var previousCategory: string = null;
 
-						if (userRoot.nuts[nut.id]) {
-							previousCategory = userRoot.nuts[nut.id].category;
+						if (userData.nuts[nut.id]) {
+							previousCategory = userData.nuts[nut.id].category;
 						} 
 
 						// Update data
-						userRoot.nuts[nut.id] = data;
+						userData.nuts[nut.id] = data;
 
 						// Update category
-						if (userRoot.categories[previousCategory]) {
-							userRoot.categories[previousCategory]--;
-							if (userRoot.categories[previousCategory] <= 0) {
-								delete userRoot.categories[previousCategory];
-							}
+						if (previousCategory) {
+							if (userData.categories[previousCategory]) {
+								userData.categories[previousCategory]--;
+								if (userData.categories[previousCategory] <= 0) {
+									delete userData.categories[previousCategory];
+								}
+							}							
 						}
 
-						if (!userRoot.categories[nut.category]) {
-							userRoot.categories[nut.category] = 1;
+						if (!userData.categories[nut.category]) {
+							userData.categories[nut.category] = 1;
 						}
 						else {
-							userRoot.categories[nut.category]++;
+							userData.categories[nut.category]++;
 						}
 
-						return userRoot;
+						return userData;
 					} catch (error) {
 						console.log("Error during save nut transaction: " + error);
 						return;

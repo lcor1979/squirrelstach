@@ -2,17 +2,17 @@
 <nav>
     <form style="margin-top: 10px; margin-bottom: 10px">
         <div class="input-field">
-                <input id="search" #search type="search" [ngModel]="filter.searchValue" (keyup)="searchValueChanged(search.value)" placeholder="{{ 'label.add.placeholder' | i18n }}">
+                <input id="search" #search type="search" [ngModel]="filter" (keyup)="searchValueChanged(search.value)" placeholder="{{ 'label.add.placeholder' | i18n }}">
             <label for="search"><i class="material-icons">search</i></label>
             <i class="material-icons">close</i>
         </div>
     </form>
 </nav>
 <ul class="collection">
-    <a [routerLink]="['Create', {label:filter.searchValue}]" class="collection-item avatar" *ngIf="displayAddRow()">
+    <a [routerLink]="['Create', {label:filter}]" class="collection-item avatar" *ngIf="displayAddRow()">
     <span class="nut-item">
         <i class="material-icons red lighten-1 circle">add</i>
-        <span class="title truncate">{{filter.searchValue}}</span>
+        <span class="title truncate">{{filter}}</span>
         </span>        
     </a>
     <a [routerLink]="['Edit', {id:nut.id}]" *ngFor="let nut of nuts" class="collection-item avatar" >

@@ -16,7 +16,7 @@ import * as s from 'underscore.string';
 })
 export class AddComponent implements OnInit, OnDestroy { 
 
-	filter: SearchFilter;
+	filter: string;
 	nuts: Nut[] = [];
 
 	constructor(private nutsService: NutsService,
@@ -25,19 +25,24 @@ export class AddComponent implements OnInit, OnDestroy {
     }
 
 	searchValueChanged(newValue:string) {
-		this.filter.searchValue = newValue;
-		this.nuts = this.nutsService.filterData(this.nutsService.allNuts, this.filter, false);
+		this.filter = newValue;
+		this.nuts = this.nutsService.getNutsMatchingLabel(this.filter);
 	}
 
 	displayAddRow(): boolean {
-		return this.filter.searchValue && (this.nuts.length > 1 || (this.nuts.length == 1 && s.capitalize(this.nuts[0].name) != s.capitalize(this.filter.searchValue)) || this.nuts.length == 0);
+		return this.filter && 
+				(
+					this.nuts.length > 1 || 
+					(
+			  			this.nuts.length == 1 && 
+			  			s.capitalize(this.nuts[0].name) != s.capitalize(this.filter)
+					) || 
+					this.nuts.length == 0
+			  	);
 	}
 
 	ngOnInit() {
-		this.filter = {
-			searchValue: "",
-			category: null
-		};
+		this.filter = "";
 	}
 
 	ngOnDestroy() {

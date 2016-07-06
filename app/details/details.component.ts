@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {ROUTER_DIRECTIVES, RouteParams } from '@angular/router-deprecated';
+import {ROUTER_DIRECTIVES, Router, RouteParams } from '@angular/router-deprecated';
 
 import {SessionStorage} from "angular2-localstorage/WebStorage";
 
@@ -22,6 +22,7 @@ export class DetailsComponent implements OnInit {
 		private nutsService: NutsService,
 		private i18n: I18nService,
 		private uiService: UIService,
+		private router:Router,
 		routeParams: RouteParams) {
 		this.nut = new Nut();
 		this.nutId = routeParams.get("id");
@@ -35,10 +36,20 @@ export class DetailsComponent implements OnInit {
 		]);
 		this.nutsService.getNutById(this.nutId, (nut) => this.nutLoaded(nut));
     }
-
+    
     delete(): void {
-		alert('delete');
+		this.nutsService.deleteNut(this.nutId, (nutId: string, error: string) => this.nutDeleted(nutId, error));
     }
+
+    protected nutDeleted(nut: Nut, error: string) {
+		if (error) {
+			console.log('Error during item delete: ' + error);
+			this.uiService.displayToast(this.i18n.getMessage('message.item.delete.error'));
+		}
+		else {
+			this.router.navigate(['Home']);
+		}
+    } 
 
     decrementQuantity(): void {
     	if ((this.quantity - 1) >= 0) {
