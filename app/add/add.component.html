@@ -2,7 +2,7 @@
 <nav>
     <form style="margin-top: 10px; margin-bottom: 10px">
         <div class="input-field">
-                <input id="search" #search type="search" [ngModel]="filter.searchValue" (keyup)="searchValueChanged(search.value)">
+                <input id="search" #search type="search" [ngModel]="filter.searchValue" (keyup)="searchValueChanged(search.value)" placeholder="{{ 'label.add.placeholder' | i18n }}">
             <label for="search"><i class="material-icons">search</i></label>
             <i class="material-icons">close</i>
         </div>

@@ -27,11 +27,23 @@ export class EditComponent implements OnInit {
 		routeParams: RouteParams, builder: FormBuilder) {
 		this.nutId = routeParams.get("id");
 
+		var label:string = "";
+		var category:string = "";
+		var amount:string  "";
+
+		// Default values for new element
+		if (!this.nutId) {
+			label = routeParams.get("label");
+			category = this.i18n.getMessage('category.general');
+			amount = 1;
+		}
+
+
 		this.form = builder.group({
-            "name": new Control("", Validators.required),
-            "category": new Control(this.i18n.getMessage('category.general'), Validators.required),
+            "name": new Control(label, Validators.required),
+            "category": new Control(category, Validators.required),
             "quantity": builder.group({
-				"amount": new Control("", Validators.compose([Validators.required, Validators.pattern("[0-9]{1,3}")])),
+				"amount": new Control(amount, Validators.compose([Validators.required, Validators.pattern("[0-9]{1,3}")])),
 				"unit": new Control("", Validators.required)
 			}),            
             "notes": new Control("")
@@ -39,8 +51,18 @@ export class EditComponent implements OnInit {
     }
 
     ngOnInit() {
+
+    	var goBackRoute = null;
+    	if (this.nutId) {
+			goBackRoute	= ['Details', { id: this.nutId }];
+    	}
+    	else {
+			goBackRoute	= ['Home'];    		
+    	}
+    	
+
 		this.navService.changeNavigationItems([
-			new NavigationItem(this, 'cancel', ['Details', { id: this.nutId }]),
+			new NavigationItem(this, 'cancel', goBackRoute),
 			new NavigationItem(this, 'done', null, () => this.save(), () => { return this.isDirtyAndValid() }),
 			new NavigationItem(this, 'delete', null, () => this.delete(), () => { return this.nutId })
 		]);

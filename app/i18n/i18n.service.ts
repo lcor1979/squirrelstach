@@ -108,6 +108,7 @@ var MESSAGES = {
 		'label.notes.placeholder': 'Notez vos remarques ici...',
 		'label.category.filter': 'Catégorie sélectionnée', 
 		'label.category.all': 'Toutes',
+		'label.add.placeholder': 'Tapez le nom de l\'élement',
 	},
 	'en': {
 		'app.title': 'Squirrel Stash',
@@ -130,6 +131,7 @@ var MESSAGES = {
 		'label.notes.placeholder': 'Type the notes here...', 
 		'label.category.filter': 'Selected category', 
 		'label.category.all': 'All',
+		'label.add.placeholder': 'Type the name of the item',
 	},
 };
 

@@ -30,7 +30,7 @@ export class AddComponent implements OnInit, OnDestroy {
 	}
 
 	displayAddRow(): boolean {
-		return this.nuts.length > 0 && (this.nuts.length > 1 || s.capitalize(this.nuts[0].name) != s.capitalize(this.filter.searchValue));
+		return this.filter.searchValue && (this.nuts.length > 1 || (this.nuts.length == 1 && s.capitalize(this.nuts[0].name) != s.capitalize(this.filter.searchValue)) || this.nuts.length == 0);
 	}
 
 	ngOnInit() {
