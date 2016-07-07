@@ -32,7 +32,7 @@ export class DetailsComponent implements OnInit {
 		this.navService.changeNavigationItems([
 			new NavigationItem(this, 'arrow_back', ['Home']),
 			new NavigationItem(this, 'edit', ['Edit', {id: this.nutId}]),
-			new NavigationItem(this, 'delete', null, this.delete)
+			new NavigationItem(this, 'delete', null, () => this.delete())
 		]);
 		this.nutsService.getNutById(this.nutId, (nut) => this.nutLoaded(nut));
     }
@@ -41,7 +41,7 @@ export class DetailsComponent implements OnInit {
 		this.nutsService.deleteNut(this.nutId, (nutId: string, error: string) => this.nutDeleted(nutId, error));
     }
 
-    protected nutDeleted(nut: Nut, error: string) {
+    protected nutDeleted(nutId: string, error: string) {
 		if (error) {
 			console.log('Error during item delete: ' + error);
 			this.uiService.displayToast(this.i18n.getMessage('message.item.delete.error'));

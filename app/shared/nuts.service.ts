@@ -11,14 +11,13 @@ declare var firebase: any;
 
 @Injectable()
 export class NutsService {
-	static DEFAULT_SETTINGS:Settings = {
-		language: 'en'
+	static DEFAULT_USER_DATA = {
+		nuts: {},
+		categories: {}
 	};
 
-	static DEFAULT_STASH = {
-		categories: {},
-		nuts: {},
-		settings: NutsService.DEFAULT_SETTINGS
+	static DEFAULT_SETTINGS:Settings = {
+		language: 'en'
 	};
 
 	private authSubscription;
@@ -63,16 +62,18 @@ export class NutsService {
 				this.currentUserId = user.uid;
 				this.userRootReference = this.getReference('stashes/' + this.currentUserId);
 
-				// Initialize user root if not existing
-				this.userRootReference.once("value", (userRoot) {
-  					if (!userRoot.exists()) {
-						userRoot.ref.set(NutsService.DEFAULT_STASH);
-  					}
-				});
-
 				this.settingsReference = this.getReference('stashes/' + this.currentUserId + '/settings');
-				this.settingsDescriptor = this.setupDataDescriptorReference(this.settingsDescriptor, 'value', this.settingsReference);
-				this.settingsDescriptor.on(this.settingsDescriptor.dataReference.orderByKey(), (settings) => this.loadSettings(settings));
+
+				// Initialize user settings if not existing
+				this.settingsReference.once("value", (settings) => {
+  					if (!settings.exists()) {
+						settings.ref.set(NutsService.DEFAULT_SETTINGS);
+  					}
+				}).then(() => {
+					this.settingsDescriptor = this.setupDataDescriptorReference(this.settingsDescriptor, 'value', this.settingsReference);
+					this.settingsDescriptor.on(this.settingsDescriptor.dataReference.orderByKey(), (settings) => this.loadSettings(settings));
+				})
+				.catch((error) => { console.log("Error initializing stash: " + error); } );
 
 				this.categoriesReference = this.getReference('stashes/' + this.currentUserId + '/data/categories');
 				this.categoriesDescriptor = this.setupDataDescriptorReference(this.categoriesDescriptor, 'value', this.categoriesReference);
@@ -187,8 +188,8 @@ export class NutsService {
 		}
 	}
 
-	getNutsMatchingLabel(label:String) {
-		return this.filterData(this.allNuts, { searchValue: label }, false);
+	getNutsMatchingLabel(label:string) {
+		return this.filterData(this.allNuts, <SearchFilter>{ searchValue: label }, false);
 	}
 
 	removeCategory() {
@@ -315,7 +316,10 @@ export class NutsService {
 			}
 
 			this.userRootReference.child("data").transaction(function(userData) {
-				if (userData) {
+				if (!userData) {
+					userData = NutsService.DEFAULT_USER_DATA;
+				}
+
 					try {
 						// Initialize nuts
 						if (!userData.nuts) {
@@ -358,10 +362,7 @@ export class NutsService {
 						console.log("Error during save nut transaction: " + error);
 						return;
 					}
-				}
-				else {
-					return null;
-				}
+		
 			}, (error, commited, snapshot) => {
 				if (error) {
 					if (callback) {

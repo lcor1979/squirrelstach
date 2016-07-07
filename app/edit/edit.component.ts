@@ -1,12 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, ElementRef } from '@angular/core';
 import { FormBuilder, Validators, ControlGroup, Control } from '@angular/common';
 import { ROUTER_DIRECTIVES, Router, RouteParams } from '@angular/router-deprecated';
+
+import { Subscription } from 'rxjs';
 
 import { MaterializeDirective } from 'angular2-materialize';
 
 import { I18nService, I18nPipe, Translation }  from '../i18n/index';
 import { Nut } from '../shared/model';
 import { NutsService, NavService, NavigationItem, UIService } from '../shared/index';
+
+declare var jQuery:any;
 
 @Component({
 	moduleId: module.id,
@@ -15,10 +19,12 @@ import { NutsService, NavService, NavigationItem, UIService } from '../shared/in
 	styleUrls: ['edit.component.css'],
 	pipes: [I18nPipe]
 })
-export class EditComponent implements OnInit { 
+export class EditComponent implements OnInit, OnDestroy { 
 
 	nutId;
 	form: ControlGroup;
+	
+	private unitEventPropagator: ControlEventPropagator;
 
 	constructor(private navService: NavService,
 		private nutsService: NutsService,
@@ -26,8 +32,8 @@ export class EditComponent implements OnInit {
 		private uiService: UIService,
 		private router: Router,
 		routeParams: RouteParams, 
-		builder: FormBuilder) {
-
+		builder: FormBuilder,
+		@Inject(ElementRef) elementRef: ElementRef) {
 		this.form = builder.group({
            	"name": new Control("", Validators.required),
            	"category": new Control("", Validators.required),
@@ -38,6 +44,8 @@ export class EditComponent implements OnInit {
            	"notes": new Control("")
         });
 
+        this.unitEventPropagator = new ControlEventPropagator("#unitContainer", (<Control>(<ControlGroup>this.form.controls['quantity']).controls['unit']), elementRef);
+
 		this.initializeForm(routeParams.get("id"), routeParams.get("label"));
     }
 
@@ -46,13 +54,13 @@ export class EditComponent implements OnInit {
 
 		var label:string = "";
 		var category:string = "";
-		var amount:string  "";
+		var amount:string = "";
 
 		// Default values for new element
 		if (!this.nutId) {
 			label = defaultLabel ? defaultLabel : "";
 			category = this.i18n.getMessage('category.general');
-			amount = 1;
+			amount = "1";
 		}
 
 		this.setFormValues(
@@ -67,7 +75,7 @@ export class EditComponent implements OnInit {
 		);
     }
 
-    private setFormValues(nut: Nut) {
+    private setFormValues(nut: any) {
     	(<Control>this.form.controls['name']).updateValue(nut.name);
 		(<Control>this.form.controls['category']).updateValue(nut.category);
 		(<Control>(<ControlGroup>this.form.controls['quantity']).controls['amount']).updateValue(nut.quantity.amount);
@@ -95,6 +103,12 @@ export class EditComponent implements OnInit {
 		if (this.nutId) {
 			this.nutsService.getNutById(this.nutId, (nut) => this.nutLoaded(nut));
 		}
+    }
+
+    ngOnDestroy() {
+    	if (this.unitEventPropagator) {
+    		this.unitEventPropagator.close();
+    	}
     }
 
     get categories() : String[] {
@@ -142,7 +156,7 @@ export class EditComponent implements OnInit {
 		this.nutsService.deleteNut(this.nutId, (nutId: string, error: string) => this.nutDeleted(nutId, error));
     }
 
-    protected nutDeleted(nut: Nut, error: string) {
+    protected nutDeleted(nutId: string, error: string) {
 		if (error) {
 			console.log('Error during item delete: ' + error);
 			this.uiService.displayToast(this.i18n.getMessage('message.item.delete.error'));
@@ -162,5 +176,63 @@ export class EditComponent implements OnInit {
 			this.initializeForm(null); 		
     	}
     }
+}
 
+class ControlEventPropagator {
+
+	private subscriber: Subscription;
+
+	constructor(public elementId: string,
+				public control: Control, 
+		        public elementRef: ElementRef) {
+
+		this.subscriber = this.control.statusChanges.subscribe((status) => this.updateStatus(status));
+	}
+
+	getInput(): any {
+		var container = jQuery(this.elementRef.nativeElement).find(this.elementId);
+		var input = container ? container.find(":input.select-dropdown") : null;
+
+		return input;		
+	}
+
+	updateStatus(statusString:string) {
+		var input = this.getInput();
+
+		if (input) {		
+			if (this.control.touched) {
+				input.removeClass("ng-untouched");
+				input.addClass("ng-touched");
+			}
+			else {
+				input.removeClass("ng-touched");
+				input.addClass("ng-untouched");			
+			}
+
+			if (this.control.pristine) {
+				input.removeClass("ng-dirty");
+				input.addClass("ng-pristine");
+			}
+			else {
+				input.removeClass("ng-pristine");
+				input.addClass("ng-dirty");			
+			}
+
+			if (this.control.valid) {
+				input.removeClass("ng-invalid");
+				input.addClass("ng-valid");
+			}
+			else {
+				input.removeClass("ng-valid");
+				input.addClass("ng-invalid");			
+			}			
+		}
+
+	}
+
+	close() {
+		if (this.subscriber) {
+			this.subscriber.unsubscribe();
+		}
+	}
 }
