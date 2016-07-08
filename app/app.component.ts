@@ -9,6 +9,7 @@ import { AddComponent }   from './add/index';
 import { ListComponent }   from './list/index'; 
 import { DetailsComponent }   from './details/index'; 
 import { EditComponent }   from './edit/index'; 
+import { SettingsComponent }   from './settings/index'; 
 
 
 
@@ -23,6 +24,7 @@ import { EditComponent }   from './edit/index';
 	})
 	@RouteConfig([
 		{ path: '/', name: 'Home', component: ListComponent, useAsDefault: true },
+		{ path: '/settings', name: 'Settings', component: SettingsComponent },
 		{ path: '/add', name: 'Add', component: AddComponent },
 		{ path: '/details/:id', name: 'Details', component: DetailsComponent },
 		{ path: '/create', name: 'Create', component: EditComponent },

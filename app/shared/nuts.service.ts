@@ -17,7 +17,10 @@ export class NutsService {
 	};
 
 	static DEFAULT_SETTINGS:Settings = {
-		language: 'en'
+		language: 'en',
+		currentStash: null,
+		share: [],
+		stashes: []
 	};
 
 	private authSubscription;
@@ -45,7 +48,7 @@ export class NutsService {
 
 	categories: String[] = [];
 
-	@SessionStorage('squirrelstash/settings') settings:Settings = NutsService.DEFAULT_SETTINGS;
+	settings:Settings = NutsService.DEFAULT_SETTINGS;
 
 	constructor(private authService: AuthService,
 		zone: NgZone) {
@@ -161,9 +164,32 @@ export class NutsService {
 	}
 
 	private loadSettings(settings) {
-		settings.forEach((setting) => {
-			this.settings[setting.key] = setting.val();
-		});
+		var value = settings.val();
+
+		if (value) {
+			this.settings.language = value.language;
+
+			var currentStashId:string = value.currentStash;
+
+			this.settings.stashes = [];
+			if (value.stashes) {
+				for (let stashId in value.stashes) {
+					var stash:Stash = new Stash(stashId, value.stashes[stashId]);
+					this.settings.stashes.push(stash);
+
+					if (stashId == currentStashId) {
+						this.settings.currentStash = stash;
+					}
+				}				
+			}
+
+			this.settings.share = [];
+			if (value.share) {
+				for (let stashId in value.share) {
+					this.settings.share.push(new Share(stashId, value.share[stashId]));
+				}				
+			}
+		}
 	}
 
 	private filterData(allNuts: Nut[], filter: SearchFilter, allIfNoFilter: boolean = true): Nut[] {
@@ -394,8 +420,31 @@ export interface SearchFilter {
 	category: string;
 }
 
-export interface Settings {
+export class Settings {
 	language: string;
+	currentStash: Stash;
+	share: Share[];
+	stashes: Stash[];
+}
+
+export class Share {
+	stashId: string;
+	shared: boolean;
+
+	constructor(stashId: string, shared: boolean) {
+		this.stashId = stashId;
+		this.shared = shared;
+	}
+}
+
+export class Stash {
+	id: string;
+	displayName: string;
+
+	constructor(id: string, displayName: string) {
+		this.id = id;
+		this.displayName = displayName;
+	}
 }
 
 class DataDescriptor {

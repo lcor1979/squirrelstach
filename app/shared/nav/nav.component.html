@@ -1,5 +1,6 @@
 <ul id="accountMenu" class="dropdown-content">
     <li *ngFor="let language of i18n.languages" [class.language-active]="language.code == i18n.language"><a class="red-text text-lighten-1" href="javascript:void(0)" (click)="switchLanguage(language.code)">{{ language.label }}</a></li>
+    <li><a class="red-text text-lighten-1" [routerLink]="['Settings']">{{ 'action.settings' | i18n }}</a></li>
     <li><a class="red-text text-lighten-1" href="javascript:void(0)" (click)="authService.disconnect()">{{ 'action.disconnect' | i18n }}</a></li>
 </ul>
 <nav>

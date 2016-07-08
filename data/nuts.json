@@ -1,53 +1,99 @@
 {
-    "stashes": {
-        "2F6nQv2ecXQzyjpiEGMQNFDKsgc2": {
-            "data": {
-                "nuts": {
-                    "n1": { "name": "Gougères", "notes": "5 min. à 180°", "quantity": { "amount": 3, "unit": "pack" }, "category": "Apéritif" },
-                    "n2": { "name": "Mini hotdogs", "notes": "", "quantity": { "amount": 1, "unit": "pack" }, "category": "Apéritif" },
-                    "n3": { "name": "Steaks hachés", "notes": "", "quantity": { "amount": 8, "unit": "piece" }, "category": "Viande" },
-                    "n4": { "name": "Haricots verts", "notes": "", "quantity": { "amount": 1, "unit": "kg" }, "category": "Légumes" },
-                    "n5": { "name": "Purée de pommes de terre", "notes": "", "quantity": { "amount": 1, "unit": "kg" }, "category": "Accompagnements" }
-                },
-                "categories": {
-                    "Apéritif": 2,
-                    "Viande": 1,
-                    "Légumes": 1,
-                    "Accompagnements": 1
-                }
-            },
-            "settings": {
-                "language": "fr",
-                "stashes": {}
-            },
-            "share": {
-                "ydtEr7jvK2bW0a4HmvrzKOSV3qu1": true
-            }
+  "stashes" : {
+    "2F6nQv2ecXQzyjpiEGMQNFDKsgc2" : {
+      "data" : {
+        "categories" : {
+          "Accompagnements" : 1,
+          "Apéritif" : 2,
+          "Légumes" : 1,
+          "Viande" : 1
         },
-        "ydtEr7jvK2bW0a4HmvrzKOSV3qu1": {
-            "data": {
-                "categories": {
-                    "Général": 1
-                },
-                "nuts": {
-                    "-KLpkYh_SBr4WEoalsRI": {
-                        "category": "Général",
-                        "name": "Test",
-                        "notes": "",
-                        "quantity": {
-                            "amount": "1",
-                            "unit": "box"
-                        }
-                    }
-                }
-            },
-            "settings": {
-                "language": "fr",
-                "stashes": {
-                    "Laurent Cornélis": "2F6nQv2ecXQzyjpiEGMQNFDKsgc2"
-                }
-            },
-            "share": {}
-        }    
+        "nuts" : {
+          "n1" : {
+            "category" : "Apéritif",
+            "name" : "Gougères",
+            "notes" : "5 min. à 180°",
+            "quantity" : {
+              "amount" : 3,
+              "unit" : "pack"
+            }
+          },
+          "n2" : {
+            "category" : "Apéritif",
+            "name" : "Mini hotdogs",
+            "notes" : "",
+            "quantity" : {
+              "amount" : 1,
+              "unit" : "pack"
+            }
+          },
+          "n3" : {
+            "category" : "Viande",
+            "name" : "Steaks hachés",
+            "notes" : "",
+            "quantity" : {
+              "amount" : 8,
+              "unit" : "piece"
+            }
+          },
+          "n4" : {
+            "category" : "Légumes",
+            "name" : "Haricots verts",
+            "notes" : "",
+            "quantity" : {
+              "amount" : 1,
+              "unit" : "kg"
+            }
+          },
+          "n5" : {
+            "category" : "Accompagnements",
+            "name" : "Purée de pommes de terre",
+            "notes" : "",
+            "quantity" : {
+              "amount" : 1,
+              "unit" : "kg"
+            }
+          }
+        }
+      },
+      "profile" : {
+        "displayName" : "Laurent Cornelis",
+        "email" : "lcor1979@gmail.com"
+      },
+      "settings" : {
+        "language" : "fr",
+        "share" : {
+            "ydtEr7jvK2bW0a4HmvrzKOSV3qu1" : true
+        }
+      }
+    },
+    "ydtEr7jvK2bW0a4HmvrzKOSV3qu1" : {
+      "data" : {
+        "categories" : {
+          "Général" : 1
+        },
+        "nuts" : {
+          "-KLpkYh_SBr4WEoalsRI" : {
+            "category" : "Général",
+            "name" : "Test",
+            "notes" : "",
+            "quantity" : {
+              "amount" : "1",
+              "unit" : "box"
+            }
+          }
+        }
+      },
+      "profile" : {
+        "displayName" : "Vanessa Avzaradel",
+        "email" : "vanessa.avzaradel@gmail.com"
+      },
+      "settings" : {
+        "language" : "fr",
+        "stashes" : {
+          "Laurent Cornélis" : "2F6nQv2ecXQzyjpiEGMQNFDKsgc2"
+        }
+      }
     }
+  }
 }

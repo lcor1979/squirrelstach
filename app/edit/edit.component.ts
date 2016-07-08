@@ -2,15 +2,11 @@ import { Component, OnInit, OnDestroy, Inject, ElementRef } from '@angular/core'
 import { FormBuilder, Validators, ControlGroup, Control } from '@angular/common';
 import { ROUTER_DIRECTIVES, Router, RouteParams } from '@angular/router-deprecated';
 
-import { Subscription } from 'rxjs';
-
 import { MaterializeDirective } from 'angular2-materialize';
 
 import { I18nService, I18nPipe, Translation }  from '../i18n/index';
 import { Nut } from '../shared/model';
-import { NutsService, NavService, NavigationItem, UIService } from '../shared/index';
-
-declare var jQuery:any;
+import { NutsService, NavService, NavigationItem, UIService, ControlEventPropagator } from '../shared/index';
 
 @Component({
 	moduleId: module.id,
@@ -178,61 +174,3 @@ export class EditComponent implements OnInit, OnDestroy {
     }
 }
 
-class ControlEventPropagator {
-
-	private subscriber: Subscription;
-
-	constructor(public elementId: string,
-				public control: Control, 
-		        public elementRef: ElementRef) {
-
-		this.subscriber = this.control.statusChanges.subscribe((status) => this.updateStatus(status));
-	}
-
-	getInput(): any {
-		var container = jQuery(this.elementRef.nativeElement).find(this.elementId);
-		var input = container ? container.find(":input.select-dropdown") : null;
-
-		return input;		
-	}
-
-	updateStatus(statusString:string) {
-		var input = this.getInput();
-
-		if (input) {		
-			if (this.control.touched) {
-				input.removeClass("ng-untouched");
-				input.addClass("ng-touched");
-			}
-			else {
-				input.removeClass("ng-touched");
-				input.addClass("ng-untouched");			
-			}
-
-			if (this.control.pristine) {
-				input.removeClass("ng-dirty");
-				input.addClass("ng-pristine");
-			}
-			else {
-				input.removeClass("ng-pristine");
-				input.addClass("ng-dirty");			
-			}
-
-			if (this.control.valid) {
-				input.removeClass("ng-invalid");
-				input.addClass("ng-valid");
-			}
-			else {
-				input.removeClass("ng-valid");
-				input.addClass("ng-invalid");			
-			}			
-		}
-
-	}
-
-	close() {
-		if (this.subscriber) {
-			this.subscriber.unsubscribe();
-		}
-	}
-}

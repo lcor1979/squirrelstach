@@ -1,0 +1,13 @@
+<div class="row">
+    <form materialize class="col s12">
+      <div class="row">
+        <div class="input-field col s12 m6 l6">
+            <select materialize="material_select" [materializeSelectOptions]="settings.stashes">
+              <option value="">{{ 'label.stash.default' | i18n }}</option>
+              <option *ngFor="let stash of settings.stashes" [value]="stash.id">{{stash.displayName}}</option>
+            </select>
+            <label>{{ 'label.settings.currentStash' | i18n }}</label>
+        </div>
+      </div>
+    </form>
+  </div>
