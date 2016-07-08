@@ -62,6 +62,13 @@ export class NutsService {
 				this.currentUserId = user.uid;
 				this.userRootReference = this.getReference('stashes/' + this.currentUserId);
 
+				// Setup profile
+				this.userRootReference.child('profile').set({
+					email: user.email,
+					displayName: user.displayName
+				});
+
+				// Setup settings
 				this.settingsReference = this.getReference('stashes/' + this.currentUserId + '/settings');
 
 				// Initialize user settings if not existing
@@ -75,10 +82,12 @@ export class NutsService {
 				})
 				.catch((error) => { console.log("Error initializing stash: " + error); } );
 
+				// Setup categories
 				this.categoriesReference = this.getReference('stashes/' + this.currentUserId + '/data/categories');
 				this.categoriesDescriptor = this.setupDataDescriptorReference(this.categoriesDescriptor, 'value', this.categoriesReference);
 				this.categoriesDescriptor.on(this.categoriesDescriptor.dataReference.orderByKey(), (categories) => this.loadCategories(categories));
 
+				// Setup nuts
 				this.nutsReference = this.getReference('stashes/' + this.currentUserId + '/data/nuts');
 				this.nutsListDescriptor = this.setupDataDescriptorReference(this.nutsListDescriptor, 'value', this.nutsReference);
 				this.nutsListDescriptor.on(this.nutsListDescriptor.dataReference.orderByChild('name'), (data) => this.addNuts(data));

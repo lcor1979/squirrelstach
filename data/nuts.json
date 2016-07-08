@@ -23,31 +23,31 @@
             "share": {
                 "ydtEr7jvK2bW0a4HmvrzKOSV3qu1": true
             }
-        }
-    },
-    "ydtEr7jvK2bW0a4HmvrzKOSV3qu1": {
-        "data": {
-            "categories": {
-                "Général": 1
-            },
-            "nuts": {
-                "-KLpkYh_SBr4WEoalsRI": {
-                    "category": "Général",
-                    "name": "Test",
-                    "notes": "",
-                    "quantity": {
-                        "amount": "1",
-                        "unit": "box"
+        },
+        "ydtEr7jvK2bW0a4HmvrzKOSV3qu1": {
+            "data": {
+                "categories": {
+                    "Général": 1
+                },
+                "nuts": {
+                    "-KLpkYh_SBr4WEoalsRI": {
+                        "category": "Général",
+                        "name": "Test",
+                        "notes": "",
+                        "quantity": {
+                            "amount": "1",
+                            "unit": "box"
+                        }
                     }
                 }
-            }
-        },
-        "settings": {
-            "language": "fr",
-            "stashes": {
-                "Laurent Cornélis": "2F6nQv2ecXQzyjpiEGMQNFDKsgc2"
-            }
-        },
-        "share": {}
+            },
+            "settings": {
+                "language": "fr",
+                "stashes": {
+                    "Laurent Cornélis": "2F6nQv2ecXQzyjpiEGMQNFDKsgc2"
+                }
+            },
+            "share": {}
+        }    
     }
 }

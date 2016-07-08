@@ -7,6 +7,10 @@
           ".read": "$uid === auth.uid || data.parent().child('share/' + auth.uid).val() === true",
           ".write": "$uid === auth.uid || data.parent().child('share/' + auth.uid).val() === true"
         },
+        "profile": {
+          ".read": "auth != null",
+          ".write": "$uid === auth.uid"
+        },
         "$other": {
           ".read": "$uid === auth.uid",
           ".write": "$uid === auth.uid"
