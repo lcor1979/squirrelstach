@@ -270,7 +270,18 @@ export class NutsService {
 
 	updateSettings(callback?: (updatedSettings: Settings, error?: string) => void) {
 		if (this.settingsReference) {
-			this.settingsReference.set(this.settings)
+			var nutsService = this;
+			this.settingsReference.transaction((settings) =>
+			{
+				if (!settings) {
+					return null;
+				}
+
+				settings.language = nutsService.settings.language;
+				settings.currentStash = nutsService.settings.currentStash ? nutsService.settings.currentStash.id : null;
+
+				return settings;
+			})
 				.then(() => { if (callback) { callback(this.settings) }})
 				.catch((error) => { if (callback) { callback(this.settings, error) }});
 		}

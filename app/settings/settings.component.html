@@ -1,8 +1,8 @@
 <div class="row">
-    <form materialize class="col s12">
+    <form materialize class="col s12" [ngFormModel]="form">
       <div class="row">
         <div class="input-field col s12 m6 l6">
-            <select materialize="material_select" [materializeSelectOptions]="settings.stashes">
+            <select materialize="material_select" [materializeSelectOptions]="settings.stashes" ngControl="currentStash">
               <option value="">{{ 'label.stash.default' | i18n }}</option>
               <option *ngFor="let stash of settings.stashes" [value]="stash.id">{{stash.displayName}}</option>
             </select>
